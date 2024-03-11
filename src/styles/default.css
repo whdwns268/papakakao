@@ -1,0 +1,52 @@
+/* 모든 요소의 마진과 패딩을 0으로 설정하고, box-sizing 속성을 border-box로 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* ul 요소의 기본 스타일 설정 */
+  ul {
+    list-style: none;  /* 목록 항목 앞의 기호 제거 */
+    padding-left: 0;  /* 왼쪽 패딩 제거 */
+  }
+  
+  /* li 요소의 기본 스타일 설정 */
+  li {
+    line-height: 1.5;  /* 줄 간격 설정 */
+  }
+  
+  /* span 요소의 기본 스타일 설정 */
+  span {
+    display: block;  /* span 요소를 블록 요소로 만듬 */
+  }
+  
+  /* 기본 폰트 설정 */
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+  }
+  
+  /* 링크 스타일 설정 */
+  a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 기본 이미지 스타일 설정 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* 기본 버튼 스타일 설정 */
+  button {
+    cursor: pointer;
+  }
+  

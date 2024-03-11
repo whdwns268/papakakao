@@ -1,30 +1,33 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 function Login() {
-    const [id, setId] = useState("");
-    const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
-  
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      setIsLoading(true);
-      const response = await fetch("http://localhost:3000/kakaologin", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id, password })
-      });
-      
-      const data = await response.json();
-      setIsLoading(false);
-      if (response.status === 200) {
-        // 로그인 성공: 메인 페이지로 이동
-        navigate('/main');
-      } else {
-        // 로그인 실패: 에러 메시지 출력
-        alert(data.error);
-      }
-    };
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();  // useNavigate 훅 사용
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const response = await fetch("http://localhost:3000/kakaologin", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id, password })
+    });
+    
+    const data = await response.json();
+    setIsLoading(false);
+    if (response.status === 200) {
+      // 로그인 성공: 메인 페이지로 이동
+      navigate('/main');
+    } else {
+      // 로그인 실패: 에러 메시지 출력
+      alert(data.error);
+    }
+  };
   
     // 로그인 폼
     return (

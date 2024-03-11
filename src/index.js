@@ -1,23 +1,25 @@
+import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import './index.css';
+import './styles/default.css';
 
-import Main from './Main'; // 메인 페이지 컴포넌트 import
+import { Provider } from 'react-redux';
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <Provider store={store}>
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/login" element={<App />} />
-        <Route path="/main" element={<Main />} />
+        <Route path="/*" element={<App />} />
       </Routes>
     </Router>
   </React.StrictMode>
+  </Provider>
 );
 
 reportWebVitals();

@@ -1,15 +1,5 @@
-const puppeteer = require('puppeteer');
-
-async function kakaologin(userData) {
+async function kakaologin({ browser, page, ...userData }) {
     let vacationData = [];  // vacationData 변수를 초기화
-
-        const browser = await puppeteer.launch({
-            //args: ['--no-sandbox'],
-            //executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome',
-            headless: false
-        });
-
-        const page = await browser.newPage();
 
         const loginUrl = 'https://accounts.kakao.com/login/?continue=https%3A%2F%2Fbusiness.kakao.com%2Fdashboard%2F#login';
 

@@ -3,11 +3,34 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const kakaologin = require('./kakaologin');
 const kakaoMsg = require('./kakaomsg');
+const crewdataFind = require('./crewdatafind');
 
 const app = express();
 const port = 3000;
 
-app.use(express.json());  // 이 라인을 라우트 핸들러 밖으로 이동시킵니다.
+let browser;
+let page;
+
+async function initializePuppeteer() {
+    browser = await puppeteer.launch({
+        //args: ['--no-sandbox'],
+        //executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome',
+        headless: false
+    });
+    page = await browser.newPage();
+}
+
+app.use(async (req, res, next) => {
+    if (!browser || !page) {
+        await initializePuppeteer();
+    }
+    req.browser = browser;
+    req.page = page;
+
+    next();
+});
+
+app.use(express.json());
 
 app.get('/ping', (req, res) => {
     res.send('pong');
@@ -17,10 +40,9 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 app.post('/kakaologin', async (req, res) => {
     const userData = req.body;
-    console.log(userData);
+    const { browser, page } = req;
     try {
-        const responseApi = await kakaologin(userData);
-        console.log(responseApi);
+        const responseApi = await kakaologin({ browser, page, ...userData });
         if (responseApi === 'LOGIN_FAILED') {
             res.status(401).json({ error: '로그인 정보를 확인해주세요.' });
             return;
@@ -34,12 +56,11 @@ app.post('/kakaologin', async (req, res) => {
 
 app.post('/kakaomsg', async (req, res) => {
     const userData = req.body;
-    console.log(userData);
+    const { browser, page } = req;
     try {
-        const responseApi = await kakaologin(userData);
-        console.log(responseApi);
-        if (responseApi === 'LOGIN_FAILED') {
-            res.status(401).json({ error: '로그인 정보를 확인해주세요.' });
+        const responseApi = await kakaoMsg({ browser, page, ...userData });
+        if (responseApi === 'MSG_FAILED') {
+            res.status(401).json({ error: '메시지 전송에 실패하였습니다.' });
             return;
         }
         res.json(responseApi);
@@ -49,6 +70,22 @@ app.post('/kakaomsg', async (req, res) => {
     }
 });
 
+app.post('/crewdatafind', async (req, res) => {
+    const userData = req.body;
+    console.log(userData);
+    try {
+        
+        const responseApi = await crewdataFind({...userData});
+        if (responseApi === 'MSG_FAILED') {
+            res.status(401).json({ error: '메시지 전송에 실패하였습니다.' });
+            return;
+        }
+        res.json(responseApi);
+    } catch (error) {
+        console.error('Error during data retrieval:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 app.get('/*', (req, res) => {
