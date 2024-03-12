@@ -4,12 +4,29 @@ async function kakaomsg({ browser, page, ...userData }) {
 
     try {
         const dynamicUrl = userData.kakaolink;
-
+        
         await page.goto(dynamicUrl);
         await page.waitForSelector('#chatWrite');
 
         //await page.click('#chatWrite');
         //await page.keyboard.type(userData.output);
+
+        const prefaceValue = userData.prefaceValue; // 이 부분을 외부로 빼내고
+
+        await page.evaluate((value) => {
+            const textarea = document.querySelector('#chatWrite');
+            if (textarea) {
+                Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(textarea, value);
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                console.timeLog(textarea);
+            }
+        }, prefaceValue);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        await page.click('.btn_submit');
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         const value = userData.output; // 이 부분을 외부로 빼내고
 
@@ -21,6 +38,11 @@ async function kakaomsg({ browser, page, ...userData }) {
                 console.timeLog(textarea);
             }
         }, value);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        await page.click('.btn_submit');
+
         
 
         // 1초 대기

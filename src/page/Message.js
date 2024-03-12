@@ -3,7 +3,7 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import './Message.css'
 import { connect } from 'react-redux';
-import { setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData } from '../actions';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData } from '../actions';
 import { useCompareData  } from '../component/useCompareData';
 
 function Message(props) {
@@ -42,7 +42,7 @@ function Message(props) {
         return columnNumber - 1;
     }
 
-    const handleTextareaChange = (e) => {
+    function handleTextareaChange(e){
         const value = e.target.value;
         props.setTextareaValue(value);
         let output = value;
@@ -59,7 +59,7 @@ function Message(props) {
         props.setCellData(output);
     }
 
-    const convertNewlineToBr = (text) => {
+    function convertNewlineToBr(text){
         return text.split('\n').map((line, index) => {
             return (
                 <span key={index}>
@@ -72,9 +72,13 @@ function Message(props) {
 
     const compareData = useCompareData();
 
-    const handleButtonClick = () => {
+    function handleButtonClick(){
       compareData();
     };
+
+    function prefaceValueChange(e){
+        props.setPrefaceValue(e.target.value);
+    }
 
     return (
         <div className="main_div">
@@ -92,6 +96,7 @@ function Message(props) {
                     </li>
                     <li>Active textarea</li>
                     <li>
+                        <input type='text' onChange={prefaceValueChange} value={props.prefaceValue}/>
                         <textarea onChange={handleTextareaChange} value={props.textareaValue} />
                     </li>
                     <li>Disabled textarea</li>
@@ -139,6 +144,7 @@ function Message(props) {
 }
 
 const mapStateToProps = state => ({
+    prefaceValue: state.prefaceValue,
     textareaValue: state.textareaValue,
     cellData: state.cellData,
     handsontableConfig: state.config,
@@ -146,6 +152,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    setPrefaceValue,
     setTextareaValue,
     setCellData,
     setHandsontableConfig,

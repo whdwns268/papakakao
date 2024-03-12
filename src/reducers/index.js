@@ -1,7 +1,8 @@
 // src/reducers/index.js
-import { SET_TEXTAREA_VALUE, SET_CELL_DATA , SET_HANDSONTABLE_CONFIG , SET_HANDSONTABLE_DATA} from '../actions';
+import { SET_PREFACE_VALUE , SET_TEXTAREA_VALUE, SET_CELL_DATA , SET_HANDSONTABLE_CONFIG , SET_HANDSONTABLE_DATA} from '../actions';
 
 const initialState = {
+  prefaceValue: '',
   textareaValue: '',
   cellData: '',
   config: {
@@ -17,6 +18,8 @@ const initialState = {
 
 function rootReducer(state = initialState, action) {
   switch (action.type) {
+    case SET_PREFACE_VALUE:
+      return { ...state, prefaceValue: action.value };
     case SET_TEXTAREA_VALUE:
       return { ...state, textareaValue: action.value };
     case SET_CELL_DATA:

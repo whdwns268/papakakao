@@ -1,11 +1,11 @@
 // useCompareData.js
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-const crewData = require('../crew.json');  // crew.json 파일 불러오기
 
 export function useCompareData() {
   const handsontableData = useSelector(state => state.data);
   const textareaValue = useSelector(state => state.textareaValue);
+  const prefaceValue = useSelector(state => state.prefaceValue);
 
 
   return async () => {
@@ -21,7 +21,7 @@ export function useCompareData() {
               crewname: w[0],
             });
 
-            console.log('Response:', response.data);
+            console.log(w[0] + 'Response :', response.data);
             resData = response.data;
             await new Promise(resolve => setTimeout(resolve, 1000)); // 2.5초 동안 대기
 
@@ -29,40 +29,48 @@ export function useCompareData() {
             console.error('Error:', error);
           }
 
-          let kakaolink = resData[0]["kakaolink"]
 
-          let matchtext;
+          if (resData.length === 0) {
+            console.log(w[0] + ' : resData 배열이 비어있습니다.');
+          } else {
 
-          const value = textareaValue;
-          let output = value;
-          const regex = /\$([A-Z]+)\$/g;
-          while ((matchtext = regex.exec(value)) !== null) {
-            console.log(w[0])
-            const columnName = matchtext[1];
-            const columnIndex = columnLabelToIndex(columnName);
-            const celldata = w[columnIndex]
-            output = output.replace(matchtext[0], celldata);
-          }
+            let kakaolink = resData[0]["kakaolink"]
 
-          console.log(output)
+            let matchtext;
 
-          try {
-            const response = await axios.post('/kakaomsg', {
-              kakaolink: kakaolink,
-              output: output
-            });
+            const value = textareaValue;
+            let output = value;
+            const regex = /\$([A-Z]+)\$/g;
+            while ((matchtext = regex.exec(value)) !== null) {
+              console.log(w[0])
+              const columnName = matchtext[1];
+              const columnIndex = columnLabelToIndex(columnName);
+              const celldata = w[columnIndex]
+              output = output.replace(matchtext[0], celldata);
+            }
 
-            console.log('Response:', response.data);
+            console.log(output)
 
-            await new Promise(resolve => setTimeout(resolve, 2500)); // 2.5초 동안 대기
+            try {
+              const response = await axios.post('/kakaomsg', {
+                kakaolink: kakaolink,
+                output: output,
+                prefaceValue: prefaceValue,
+              });
 
-          } catch (error) {
-            console.error('Error:', error);
+              console.log('Response:', response.data);
+
+              await new Promise(resolve => setTimeout(resolve, 2500)); // 2.5초 동안 대기
+
+            } catch (error) {
+              console.error('Error:', error);
+            }
+
           }
         }
       }
     } else {
-      console.log('No match found');
+      console.log('셀에 입력된 데이터가 없습니다.');
     }
   }
 }
