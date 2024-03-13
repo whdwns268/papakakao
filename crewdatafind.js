@@ -5,10 +5,12 @@ async function crewdatafind({...userData}) {
 
     try {
         // 데이터베이스 컬렉션에 연결
-        const papa = await connectDB();
+        
+        const database = await connectDB();
+        const collection = database.collection("crewkakaodata");
 
         // 데이터 조회
-        const cursor = await papa.find({"crewname": crewname});
+        const cursor = await collection.find({"crewname": crewname});
         const result = await cursor.toArray();
         console.log(result);
         

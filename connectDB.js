@@ -12,10 +12,9 @@ async function connectDB() {
 
         // 데이터베이스와 컬렉션 선택
         const database = client.db("papa");
-        const collection = database.collection("crewkakaodata");
 
         // 컬렉션 객체 반환
-        return collection;
+        return database;
     } catch (error) {
         console.error('데이터베이스 연결 중 오류 발생:', error);
         throw error; // 오류를 다시 던져 호출자가 처리할 수 있도록 함

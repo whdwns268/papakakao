@@ -4,6 +4,9 @@ const path = require('path');
 const kakaologin = require('./kakaologin');
 const kakaoMsg = require('./kakaomsg');
 const crewdataFind = require('./crewdatafind');
+const formDataSave = require('./formDataSave');
+const formDataGet = require('./formDataGet');
+
 
 const app = express();
 const port = 3000;
@@ -87,6 +90,37 @@ app.post('/crewdatafind', async (req, res) => {
     }
 });
 
+app.post('/formDataSave', async (req, res) => {
+    const userData = req.body;
+
+    try {
+        
+        const responseApi = await formDataSave({...userData});
+        if (responseApi === 'MSG_FAILED') {
+            res.status(401).json({ error: '저장에 실패 하였습니다.' });
+            return;
+        }
+        res.json(responseApi);
+    } catch (error) {
+        console.error('Error during data retrieval:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post('/formDataGet', async (req, res) => {
+
+    try {
+        const responseApi = await formDataGet();
+        if (responseApi === 'MSG_FAILED') {
+            res.status(401).json({ error: '데이터 가져오기에 실패 하였습니다.' });
+            return;
+        }
+        res.json(responseApi);
+    } catch (error) {
+        console.error('Error during data retrieval:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.get('/*', (req, res) => {
     res.set({
