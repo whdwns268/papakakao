@@ -17,9 +17,9 @@ let page;
 async function initializePuppeteer() {
     browser = await puppeteer.launch({
         // 서버에서만
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/app/.apt/usr/bin/google-chrome',
+        //executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/app/.apt/usr/bin/google-chrome',
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        headless: ['NEW'],
+        headless: "NEW",
         //args: ['--no-sandbox'],
         //executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome',
         //headless: false
