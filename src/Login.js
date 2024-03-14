@@ -10,7 +10,7 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch("http://localhost:3000/kakaologin", {
+    const response = await fetch("/kakaologin", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
