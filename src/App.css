@@ -1,40 +1,43 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: local('Pretendard-Light'), url('./assets/fonts/Pretendard-Light.otf') format('truetype');
+  font-weight: 300; /* Light 굵기 */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: local('Pretendard-Medium'), url('./assets/fonts/Pretendard-Medium.otf') format('truetype');
+  font-weight: 400; /* Medium 굵기 */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: local('Pretendard-SemiBold'), url('./assets/fonts/Pretendard-SemiBold.otf') format('truetype');
+  font-weight: 600; /* SemiBold 굵기 */
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Pretendard';
+  src: local('Pretendard-Bold'), url('./assets/fonts/Pretendard-Bold.otf') format('truetype');
+  font-weight: 700; /* Bold 굵기 */
+  font-style: normal;
+}
+
 .App {
   text-align: center;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #F1F5F9;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-input[type="text"], input[type="password"] {
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-}
-
-input[type="submit"] {
-  background-color: #61dafb;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-input[type="submit"]:hover {
-  background-color: #52cdef;
+  font-family: 'Pretendard', sans-serif;
 }

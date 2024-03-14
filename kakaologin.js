@@ -19,7 +19,7 @@ async function kakaologin({ browser, page, ...userData }) {
             // 로그인 성공: 이후 처리
 
             //2fa페이지 대기
-            await page.waitForNavigation();
+            await page.waitForNavigation({ timeout: 300000 });
 
             await page.waitForSelector('.group_list');
             // 로그인 성공 확인

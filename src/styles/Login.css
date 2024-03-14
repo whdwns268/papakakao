@@ -1,0 +1,91 @@
+.login_form {
+    gap: 10px;
+}
+
+.login_form > div{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.login_form > div > label{
+    width: 350px;
+    height: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.login_form > div > label > input{
+    width: inherit;
+    height: 100%;
+    padding: 10px;
+    padding-left: 50px;
+    font-size: 16px;
+    border: 1px solid #c1c7cf;
+    color:#646464;
+}
+
+.login_form > div > label > input:focus{
+    z-index: 1;
+    outline: none;
+    border: 1px solid #3c50e0;
+}
+
+.login_form > div > label > img{
+    z-index: 2;
+    position: absolute;
+    left:4%;
+
+}
+
+
+.login_form > div > label > input[type="text"]  {
+    border-radius: 12px 12px 0px 0px;
+}
+
+.login_form > div > label > input[type="password"]{
+    margin-top:-1px;
+    border-radius: 0px 0px 12px 12px;
+}
+
+.login_form > input[type="submit"] {
+    margin-top: 12px;
+    width: 350px;
+    height: 50px;
+    background-color: #3056D3;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+}
+
+.login_form > input[type="submit"]:hover {
+    background-color: #142c7a;
+}
+
+.lodding_div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 350px;
+    height: 300px;
+    background: linear-gradient(45deg, rgb(96, 178, 255), rgb(51, 122, 255));
+    color:#424242;
+    border-radius: 12px;
+    color: white;
+}
+
+.lodding_div > span:last-child{
+    margin-top: 30px;
+    overflow: hidden;
+    width: 150px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

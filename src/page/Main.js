@@ -8,7 +8,7 @@ import Message from './Message';
 //import Setting from './Setting';
 //import Exit from './Exit';
 
-import './Main.css';
+import '../styles/Main.css';
 
 function Main() {
   return (

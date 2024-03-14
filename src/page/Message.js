@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
-import './Message.css'
+import '../styles/Message.css'
 import { connect } from 'react-redux';
 import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData } from '../actions';
 import { useCompareData } from '../component/useCompareData';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import './Navbar.css'
+import '../styles/Navbar.css'
 import logo from '../M_logo.svg';
 import Calender from '../ico/calender.svg';
 import Data from '../ico/data.svg';
