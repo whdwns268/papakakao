@@ -3,17 +3,23 @@ import axios from 'axios';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import '../styles/Message.css'
-import { connect } from 'react-redux';
-import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData } from '../actions';
+import { connect, useSelector, useDispatch } from 'react-redux';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState } from '../actions';
 import { useCompareData } from '../component/useCompareData';
 import { useFormdataSave } from '../component/useFormdataSave';
+import Loader from '../ico/Loader.svg';
 
 function Message(props) {
+    const dispatch = useDispatch();
+
+    const comparedata = useSelector((state) => state.comparedata);
     const hotElement = useRef(null);
     const [hot, setHot] = useState(null);
     const [isOverlayActive, setIsOverlayActive] = useState(false);
+    const [isDataSendingList, setIsDataSendingList] = useState(false);
     const [formName, setFormName] = useState("폼 이름");
     const [options, setOptions] = useState([]);
+
 
 
     useEffect(() => {
@@ -44,7 +50,6 @@ function Message(props) {
                 console.error('데이터를 가져오는 데 실패했습니다.', error);
             }
         };
-
         fetchData();
     }, []);
 
@@ -86,11 +91,34 @@ function Message(props) {
         });
     }
 
-    const setcompareData = useCompareData();
+
+
+    const setcompareDataGo = useCompareData();
+    const [comparedata_View, setComparedata_View] = useState([]);
 
     function handleButtonClick() {
-        setcompareData();
+        dispatch(setOverviewState());
+        setIsDataSendingList(true)
+        setcompareDataGo();
     };
+
+    useEffect(() => {
+        console.log(comparedata["Count"]);
+        // comparedata의 길이에 따라 조건을 확인하고, 상태를 업데이트합니다.
+        if (comparedata["Count"] === 1) {
+            setComparedata_View([comparedata]); // 배열 상태로 초기화
+            //console.log(comparedata_View);
+        } else if ((comparedata["Count"] > 1)) {
+            setComparedata_View(prev => [...prev, comparedata]); // 이전 배열 상태에 새로운 데이터 추가
+            //console.log(comparedata_View);
+        }
+        // 이 로그는 상태가 업데이트되기 전의 값을 출력할 수 있습니다.
+
+    }, [comparedata]); // comparedata가 변경될 때마다 useEffect가 실행됩니다.
+
+    useEffect(() => {
+        console.log(comparedata_View); // 상태가 업데이트된 후의 값을 출력
+    }, [comparedata_View]);
 
     function prefaceValueChange(e) {
         props.setPrefaceValue(e.target.value);
@@ -123,13 +151,30 @@ function Message(props) {
         if (selectedItem) {
             // 찾은 객체의 prefaceValue와 textareaValue로 상태를 업데이트합니다.
             prefaceValueChange({ target: { value: selectedItem.prefaceValue } });
-            handleTextareaChange({ target: { value: selectedItem.textareaValue} });
+            handleTextareaChange({ target: { value: selectedItem.textareaValue } });
         }
     }
 
     return (
         <div className="main_div">
-
+            {isDataSendingList && <span className="SendingList">
+                <span>
+                    <ul>
+                        <li>실시간 발송 현황</li>
+                        <li>
+                            <ul>
+                                {comparedata_View.map((data, index) => (
+                                    // 로딩 중인 데이터 보여주기
+                                    <li key={index}>
+                                        {data.Count} 
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                        <li><img src={Loader} /></li>
+                    </ul>
+                </span>
+            </span>}
             <div className="table_div_css" ref={hotElement} />
             <div className="settext">
                 {/* 폼저장시 */}
@@ -207,6 +252,7 @@ const mapStateToProps = state => ({
     cellData: state.cellData,
     handsontableConfig: state.config,
     data: state.data,
+    setIsSendding: state.Value,
 });
 
 const mapDispatchToProps = {

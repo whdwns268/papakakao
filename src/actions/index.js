@@ -4,7 +4,8 @@ export const SET_CELL_DATA = 'SET_CELL_DATA';
 export const SET_HANDSONTABLE_CONFIG = 'SET_HANDSONTABLE_CONFIG';
 export const SET_HANDSONTABLE_DATA = 'SET_HANDSONTABLE_DATA';
 export const SET_PREFACE_VALUE = 'SET_PREFACE_VALUE';
-
+export const SET_COMPARE_DATA = 'SET_COMPARE_DATA';
+export const SET_OVERVIEW_STATE = 'SET_OVERVIEW_STATE';
 
 export function setPrefaceValue(value) {
   return { type: SET_PREFACE_VALUE, value };
@@ -24,4 +25,12 @@ export function setHandsontableConfig(value) {
 
 export function setHandsontableData(value) {
   return { type: SET_HANDSONTABLE_DATA, value };
+}
+
+export function setCompareData(value) {
+  return { type: SET_COMPARE_DATA, value };
+}
+
+export function setOverviewState() {
+  return { type: SET_OVERVIEW_STATE };
 }

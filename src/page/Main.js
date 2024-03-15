@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import NavBar from './Navbar';
 //import Home from './Home';
@@ -9,10 +9,17 @@ import Message from './Message';
 //import Exit from './Exit';
 
 import '../styles/Main.css';
+import { connect , useSelector } from 'react-redux';
+import { useCompareData } from '../component/useCompareData';
 
 function Main() {
+
+  const overviewState = useSelector((state) => state.overviewstate);
+  console.log(overviewState);
+
   return (
     <div className='Main_div'>
+      { overviewState && <span className="isSending"></span> }
       <NavBar />
       <Routes>
         {/* <Route path="home" element={<Home />} /> */}
