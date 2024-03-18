@@ -1,5 +1,6 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const multer = require('multer');
 const path = require('path');
 const kakaologin = require('./kakaologin');
 const kakaoMsg = require('./kakaomsg');
@@ -10,22 +11,6 @@ const formDataGet = require('./formDataGet');
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-let browser;
-let page;
-
-async function initializePuppeteer() {
-    browser = await puppeteer.launch({
-        // 서버에서만
-        //executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/app/.apt/usr/bin/google-chrome',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        headless: false,
-        //args: ['--no-sandbox'],
-        //executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome',
-        //headless: false
-    });
-    page = await browser.newPage();
-}
 
 app.use(async (req, res, next) => {
     if (!browser || !page) {
@@ -39,11 +24,37 @@ app.use(async (req, res, next) => {
 
 app.use(express.json());
 
-app.get('/ping', (req, res) => {
-    res.send('pong');
-});
-
 app.use(express.static(path.join(__dirname, 'build')));
+
+ // 파일명 원본으로 저장
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+     
+      const originalName = file.originalname;
+      cb(null, originalName);
+    }
+  });
+  
+  const upload = multer({ storage: storage });
+
+let browser;
+let page;
+
+async function initializePuppeteer() {
+    browser = await puppeteer.launch({
+        // 서버에서만
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/app/.apt/usr/bin/google-chrome',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: "New",
+        //args: ['--no-sandbox'],
+        //executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome',
+        //headless: false
+    });
+    page = await browser.newPage();
+}
 
 app.post('/kakaologin', async (req, res) => {
     const userData = req.body;
@@ -61,11 +72,12 @@ app.post('/kakaologin', async (req, res) => {
     }
 });
 
-app.post('/kakaomsg', async (req, res) => {
+app.post('/kakaomsg', upload.any(), async (req, res) => {
     const userData = req.body;
+    const userFiles = req.files;
     const { browser, page } = req;
     try {
-        const responseApi = await kakaoMsg({ browser, page, ...userData });
+        const responseApi = await kakaoMsg({ browser, page, ...userData , userFiles});
         if (responseApi === 'MSG_FAILED') {
             res.status(401).json({ error: '메시지 전송에 실패하였습니다.' });
             return;

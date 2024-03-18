@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor:default;
 }
 
 .main_div>div:nth-of-type(1) {
@@ -176,6 +177,66 @@ margin-right: 10px;
   height: 35px;
   border: 2px solid #E2E8F0;
   border-radius: 4px;
+}
+
+.Selectfield_fileupload{
+  display: flex;
+}
+
+.Selectfield_fileupload > span{
+  height: 35px;
+  border: 2px solid #E2E8F0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.Selectfield_fileupload > span:nth-of-type(1){
+  width: 65%;
+  margin-right:5%;
+  display: flex;
+  align-items: center;
+}
+
+.Selectfield_fileupload > span:nth-of-type(1) > button{
+  height: 100%;
+  width: 100px;
+  color:#64748B;
+  background-color: #E2E8F0;
+  border: none; 
+}
+
+.Selectfield_fileupload > span:nth-of-type(1) > button:hover{
+  background-color: #aab2bd;
+  color:#3a4553;
+}
+
+.Selectfield_fileupload > span:nth-of-type(1) > span{
+  width: calc( 100% - 100px );
+  height: inherit;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.Selectfield_fileupload > span:nth-of-type(2){
+  width: 30%;
+  display: flex;
+}
+
+.Selectfield_fileupload > span:nth-of-type(2) > div{
+  width: 100px;
+  color:#64748B;
+  background-color: #E2E8F0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Selectfield_fileupload > span:nth-of-type(2) > input{
+  width: calc( 100% - 100px );
+  border: none;
+  text-align: center;
 }
 
 

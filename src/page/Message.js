@@ -4,7 +4,7 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import '../styles/Message.css'
 import { connect, useSelector, useDispatch } from 'react-redux';
-import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState } from '../actions';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState , setFileValue } from '../actions';
 import { useCompareData } from '../component/useCompareData';
 import { useFormdataSave } from '../component/useFormdataSave';
 import Loader from '../ico/Loader.svg';
@@ -19,7 +19,9 @@ function Message(props) {
     const [isDataSendingList, setIsDataSendingList] = useState(false);
     const [formName, setFormName] = useState("폼 이름");
     const [options, setOptions] = useState([]);
-
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const fileInputRef = useRef(null);
+    
 
 
     useEffect(() => {
@@ -69,12 +71,11 @@ function Message(props) {
         props.setTextareaValue(value);
         let output = value;
         let match;
-        const regex = /\$([A-Z]+)\$/g;
+        const regex = /\{([A-Za-z]+)\}/gi;
         while ((match = regex.exec(value)) !== null) {
-            const columnName = match[1];
+            const columnName = match[1].toUpperCase();
             const columnIndex = columnLabelToIndex(columnName);
             const cellData = hot.getDataAtCell(0, columnIndex);
-            const cellData2 = hot.getDataAtCol(columnIndex);
             output = output.replace(match[0], cellData);
         }
         props.setCellData(output);
@@ -93,7 +94,7 @@ function Message(props) {
 
 
 
-    const setcompareDataGo = useCompareData();
+    const setcompareDataGo = useCompareData(selectedFiles); //데이터 실행
     const [comparedata_View, setComparedata_View] = useState([]);
 
     function handleButtonClick() {
@@ -155,6 +156,22 @@ function Message(props) {
         }
     }
 
+    function handleFileValue(e){
+        props.setFileValue(e.target.value)
+        console.log(e.target.value)
+    }
+
+
+
+    function handleFileButton() {
+        fileInputRef.current.click(); // ref를 통해 input 요소 클릭
+      };
+
+    function handleFileChange(event){
+        const files = event.target.files;
+        setSelectedFiles(files)
+      };
+
     return (
         <div className="main_div">
             {isDataSendingList && <span className="SendingList">
@@ -192,7 +209,7 @@ function Message(props) {
                     <li>Active textarea</li>
                     <li>
                         <ul>
-                            <li>보낼 단어가 특정되어 있는 열을 [ $열$  ] 형태로 작성</li>
+                            <li>보낼 단어가 특정되어 있는 열을 {"{열}"} 형태로 작성 ex ) {"{AA}"}</li>
                         </ul>
                     </li>
                     <li>Active textarea</li>
@@ -222,10 +239,18 @@ function Message(props) {
                     </li>
 
                     <li>
-                        <div>발송그룹</div>
-                        <select>
-                            <option>시트 A열 데이터</option>
-                        </select>
+                        <div><span>Attach file</span></div>
+                        <span className='Selectfield_fileupload'>
+                            <span>
+                            <input type="file" ref={fileInputRef} hidden="hidden" onChange={handleFileChange} multiple />
+                                <button type="button" onClick={handleFileButton}>파일 선택</button>
+                                {selectedFiles.length > 0 ? <span>{selectedFiles.length}개의 파일 선택됨</span> : <span>선택된 파일 없음</span>}
+                            </span>
+                            <span>
+                                <div>파일명 열</div>
+                                <input type='text' maxLength={2} onChange={handleFileValue} value={props.fileValue} ></input>
+                            </span>
+                        </span>
                     </li>
                 </ul>
 
@@ -237,7 +262,7 @@ function Message(props) {
                         </div>
                         <div>
                             <button type='button'>예약 발송</button>
-                            <button onClick={handleButtonClick} type='button'>즉시 발송</button>
+                            <button onClick={handleButtonClick}  type='button'>즉시 발송</button>
                         </div>
                     </li>
                 </ul>
@@ -253,6 +278,7 @@ const mapStateToProps = state => ({
     handsontableConfig: state.config,
     data: state.data,
     setIsSendding: state.Value,
+    fileValue: state.fileValue,
 });
 
 const mapDispatchToProps = {
@@ -261,6 +287,7 @@ const mapDispatchToProps = {
     setCellData,
     setHandsontableConfig,
     setHandsontableData,
+    setFileValue,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);

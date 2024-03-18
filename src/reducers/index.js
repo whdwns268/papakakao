@@ -7,6 +7,7 @@ import {
   SET_HANDSONTABLE_DATA,
   SET_COMPARE_DATA,
   SET_OVERVIEW_STATE,
+  SET_FILE_VALUE,
 } from '../actions';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   textareaValue: '',
   cellData: '',
   comparedata: '',
+  fileValue: '',
   overviewstate: false,
   config: {
     data: Array.from({ length: 150 }, () => Array(50).fill('')),
@@ -40,6 +42,8 @@ function rootReducer(state = initialState, action) {
       return { ...state, data: action.value };
     case SET_COMPARE_DATA:
       return { ...state, comparedata: action.value };
+    case SET_FILE_VALUE:
+      return { ...state, fileValue: action.value };
     case SET_OVERVIEW_STATE:
       return { ...state, overviewstate: !state.overviewstate };
 
