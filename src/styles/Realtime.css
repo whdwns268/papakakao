@@ -1,0 +1,150 @@
+.SendingList_ul {
+    min-width: 1220px;
+    max-width: 1400px;
+    width: 100%;
+    height: 800px;
+    display: flex;
+}
+
+.SendingList_ul > li{
+    width: 600px;
+    height: inherit;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.SendingList_ul > li:nth-of-type(1) {
+    margin-right: 20px;
+}
+
+.SendingList_ul > li:nth-of-type(2) {
+    background-color: rgba(255, 255, 255, 0.9);
+    position: relative;
+}
+
+.RealTime_Send_History{
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.RealTime_fontbold{
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    color: #4e4e4e;
+    border-bottom: 1px solid #D5D5D5;
+    box-sizing: border-box;
+}
+
+.RealTime_Send_History > li:nth-of-type(1){
+    width: 80px;    
+}
+
+.RealTime_Send_History > li:nth-of-type(2){
+    width: 240px;
+}
+
+.RealTime_Send_History > li:nth-of-type(3){
+    width: 140px;
+}
+
+.RealTime_Send_History > li:nth-of-type(4){
+    width: 100px;
+}
+
+.RealTime_inbox{
+    border-radius: 30px;
+    color: #4e4e4e;
+    font-weight: 400;    
+}
+
+.RealTime_Send_History_div{
+    height: calc( 100% - 90px );
+    overflow: auto;
+}
+
+.RealTime_inbox >  li:nth-of-type(1){
+    width: 80px;    
+}
+
+.RealTime_inbox >  li:nth-of-type(2){
+    width: 240px;
+}
+
+.RealTime_inbox >  li:nth-of-type(3){
+    width: 140px;
+}
+
+.RealTime_inbox >  li:nth-of-type(4){
+    width: 100px;
+    color: #00B69B;
+    background-color: #EEF7F2;
+    border-radius: 100px;
+}
+
+.SendingList_count{
+    padding: 0px 20px 0px 20px;
+    position: absolute;
+    top: 100%;
+    margin-top: -50px;
+    height: 50px;
+    border-top: 1px solid #D5D5D5;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.SendingList_count > li{
+    width: 110px;
+    height: 25px;
+    text-align: center;
+    margin-right: 10px;;
+    border-radius: 25px;
+}
+
+.SendingList_count > li:nth-of-type(1){
+    background-color: #FFF8EC;
+    color: #FFA70B;
+}
+
+.SendingList_count > li:nth-of-type(2){
+    background-color: #EEF7F2;
+    color: #00B69B;
+}
+
+.SendingList_count > li:nth-of-type(3){
+    background-color: #FCF0F2;
+    color: #D34053;
+}
+
+.SendingList_count > li:nth-of-type(4){
+    background-color: #FCF0F2;
+    color: #D34053;
+}
+
+.SendingList_count > li:nth-of-type(5){
+    width: 50px;
+    position: relative;
+}
+
+.SendingList_count > li:nth-of-type(5) > button{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    left:100%;
+    margin-left:10px;
+    border: none;
+    background-color: #929292;
+    color:white;
+}

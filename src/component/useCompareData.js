@@ -31,7 +31,8 @@ console.log(fileValue)
           });
 
           resData = response.data;
-          await new Promise(resolve => setTimeout(resolve, 1000)); // 2.5초 동안 대기
+          results['CrewnameCk'] = resData
+          await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 동안 대기
 
         } catch (error) {
 

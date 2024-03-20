@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import NavBar from './Navbar';
 //import Home from './Home';
 import Calendar from './Calender';
-import Message from './Message';
+import Message from './Message/Message';
 //import Data from './Data';
 //import Setting from './Setting';
 //import Exit from './Exit';
@@ -11,6 +11,7 @@ import Message from './Message';
 import '../styles/Main.css';
 import { connect , useSelector } from 'react-redux';
 import { useCompareData } from '../component/useCompareData';
+import EzMsg from './EzMsg';
 
 function Main() {
 
@@ -20,6 +21,7 @@ function Main() {
   return (
     <div className='Main_div'>
       { overviewState && <span className="isSending"></span> }
+
       <NavBar />
       <Routes>
         {/* <Route path="home" element={<Home />} /> */}

@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
-import '../styles/Message.css'
-import { connect, useSelector, useDispatch } from 'react-redux';
-import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState , setFileValue } from '../actions';
-import { useCompareData } from '../component/useCompareData';
-import { useFormdataSave } from '../component/useFormdataSave';
-import Loader from '../ico/Loader.svg';
+import '../../styles/Message.css'
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState, setFileValue } from '../../actions';
+import { useCompareData } from '../../component/useCompareData';
+import { useFormdataSave } from '../../component/useFormdataSave';
+import Realtime from './Realtime.js';
+import EzMsg from '../EzMsg.js';
 
 function Message(props) {
     const dispatch = useDispatch();
+    const handsontableData = useSelector(state => state.data);
 
-    const comparedata = useSelector((state) => state.comparedata);
     const hotElement = useRef(null);
     const [hot, setHot] = useState(null);
     const [isOverlayActive, setIsOverlayActive] = useState(false);
@@ -21,8 +22,6 @@ function Message(props) {
     const [options, setOptions] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const fileInputRef = useRef(null);
-    
-
 
     useEffect(() => {
 
@@ -54,8 +53,6 @@ function Message(props) {
         };
         fetchData();
     }, []);
-
-
 
     function columnLabelToIndex(columnLabel) {
         let columnNumber = 0;
@@ -93,54 +90,30 @@ function Message(props) {
     }
 
 
-
-    const setcompareDataGo = useCompareData(selectedFiles); //데이터 실행
-    const [comparedata_View, setComparedata_View] = useState([]);
-
-    function handleButtonClick() {
-        dispatch(setOverviewState());
-        setIsDataSendingList(true)
-        setcompareDataGo();
-    };
-
-    useEffect(() => {
-        console.log(comparedata["Count"]);
-        // comparedata의 길이에 따라 조건을 확인하고, 상태를 업데이트합니다.
-        if (comparedata["Count"] === 1) {
-            setComparedata_View([comparedata]); // 배열 상태로 초기화
-            //console.log(comparedata_View);
-        } else if ((comparedata["Count"] > 1)) {
-            setComparedata_View(prev => [...prev, comparedata]); // 이전 배열 상태에 새로운 데이터 추가
-            //console.log(comparedata_View);
-        }
-        // 이 로그는 상태가 업데이트되기 전의 값을 출력할 수 있습니다.
-
-    }, [comparedata]); // comparedata가 변경될 때마다 useEffect가 실행됩니다.
-
-    useEffect(() => {
-        console.log(comparedata_View); // 상태가 업데이트된 후의 값을 출력
-    }, [comparedata_View]);
-
+    // 셀렉트된 폼이 있을 경우 텍스트필드 벨류변경
     function prefaceValueChange(e) {
         props.setPrefaceValue(e.target.value);
     }
 
+    //폼 저장 컴포넌트 실행
+    const setformdataSave = useFormdataSave();
+
     function formdataSave() {
         setIsOverlayActive(true);
-
     }
 
+    //새로운 폼 이름 입력 후 저장
     function handleChange(event) {
         setFormName(event.target.value); // 변경된 값을 상태에 업데이트
     };
 
 
-    const setformdataSave = useFormdataSave();
-
+    //텍스트필드 폼 저장
     function formdataSavego() {
         setformdataSave(formName); // 변경된 값을 상태에 업데이트
     };
 
+    //텍스트필드 폼 선택
     function handleSelectChange(event) {
         const selectedFormName = event.target.value;
 
@@ -156,42 +129,50 @@ function Message(props) {
         }
     }
 
-    function handleFileValue(e){
-        props.setFileValue(e.target.value)
-        console.log(e.target.value)
+    //파일명 입력열
+    function handleFileValue(e) {
+        let value = e.target.value
+        value = value.toUpperCase();
+        props.setFileValue(value)
+        console.log(value)
     }
 
-
-
+    //히든 파일선택버튼 
     function handleFileButton() {
         fileInputRef.current.click(); // ref를 통해 input 요소 클릭
-      };
+    };
 
-    function handleFileChange(event){
+    //파일 데이터 확인 
+    function handleFileChange(event) {
         const files = event.target.files;
         setSelectedFiles(files)
-      };
+    };
+
+    // ------------------전송관련
+    const setcompareDataGo = useCompareData(selectedFiles); //데이터 실행
+
+    //즉시발송 버튼을 눌렀을 때 
+    const [showEzMsg, setShowEzMsg] = useState(false);
+    const [msgText, setMsgText] = useState("");
+
+    function handleButtonClick() {
+        //handsontableData에 데이터가 있는지 확인
+        if (handsontableData) {
+            dispatch(setOverviewState());
+            setIsDataSendingList(true)
+            setcompareDataGo();
+        } else if (!handsontableData) {
+            dispatch(setOverviewState());
+            setMsgText("셀에 입력된 데이터가 없습니다.")
+            setShowEzMsg(true);
+            console.log(showEzMsg)
+        }
+    }
 
     return (
         <div className="main_div">
-            {isDataSendingList && <span className="SendingList">
-                <span>
-                    <ul>
-                        <li>실시간 발송 현황</li>
-                        <li>
-                            <ul>
-                                {comparedata_View.map((data, index) => (
-                                    // 로딩 중인 데이터 보여주기
-                                    <li key={index}>
-                                        {data.Count} 
-                                    </li>
-                                ))}
-                            </ul>
-                        </li>
-                        <li><img src={Loader} /></li>
-                    </ul>
-                </span>
-            </span>}
+            {showEzMsg && <label className="isEzMsg"><EzMsg  MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>} {/* 조건부 렌더링 */}
+            {isDataSendingList && <span className="SendingList"><Realtime isDataSendingList={isDataSendingList} setIsDataSendingList={setIsDataSendingList} /></span>}
             <div className="table_div_css" ref={hotElement} />
             <div className="settext">
                 {/* 폼저장시 */}
@@ -219,50 +200,46 @@ function Message(props) {
                     </li>
                     <li>Disabled textarea</li>
                     <li><div>{convertNewlineToBr(props.cellData)}</div></li>
-                    <li>
-                        <div>
-                            <button type='button' onClick={formdataSave}>폼 저장</button>
-                            <button type='button'>개발 중</button>
-                        </div>
-                    </li>
                 </ul>
 
                 <ul className='Selectfield'>
                     <li>Select input</li>
-                    <li>
+                    <li className='Selectfield_selectbox'>
                         <div>Select form</div>
-                        <select onChange={handleSelectChange}>
+                        <span><select onChange={handleSelectChange}>
                             {options.map((option, index) => (
                                 <option key={index} value={option.formname}>{option.formname}</option>
                             ))}
                         </select>
+                            <button type='button' onClick={formdataSave}>폼 저장</button>
+                            <button type='button'>개발 중</button>
+                        </span>
                     </li>
 
                     <li>
                         <div><span>Attach file</span></div>
                         <span className='Selectfield_fileupload'>
                             <span>
-                            <input type="file" ref={fileInputRef} hidden="hidden" onChange={handleFileChange} multiple />
+                                <input type="file" ref={fileInputRef} hidden="hidden" onChange={handleFileChange} multiple />
                                 <button type="button" onClick={handleFileButton}>파일 선택</button>
                                 {selectedFiles.length > 0 ? <span>{selectedFiles.length}개의 파일 선택됨</span> : <span>선택된 파일 없음</span>}
                             </span>
                             <span>
                                 <div>파일명 열</div>
-                                <input type='text' maxLength={2} onChange={handleFileValue} value={props.fileValue} ></input>
+                                <input type='text' maxLength={2} onChange={handleFileValue} value={props.fileValue} placeholder='AB'></input>
                             </span>
                         </span>
                     </li>
                 </ul>
 
                 <ul className='pickerfield'>
-                    <li>Send Message</li>
                     <li>
                         <div>
                             <input type="date"></input>
                         </div>
                         <div>
                             <button type='button'>예약 발송</button>
-                            <button onClick={handleButtonClick}  type='button'>즉시 발송</button>
+                            <button onClick={handleButtonClick} type='button'>즉시 발송</button>
                         </div>
                     </li>
                 </ul>

@@ -14,8 +14,9 @@
 }
 
 .settext {
-  min-width: 600px;
+  min-width: 715px;
   width: 50%;
+  min-height: 850px;
   height: 100%;
   background-color: white;
   display: flex;
@@ -37,12 +38,12 @@
 
 
 .textfield {
-  margin-top: 20px;
+  margin-top: 2.5%;
   width: 90%;
-  height: 580px;
+  height: 60%;
   border: 1px solid #E2E8F0;
   border-radius: 2px;
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
   box-sizing: border-box;
 }
 
@@ -52,19 +53,21 @@
   font-size: 20px;
   font-weight: 400;
   padding-bottom: 10px;
+  height: 40px;
 }
 
 .textfield>li:nth-of-type(2) {
   margin-top: 10px;
   font-size: 14px;
   font-weight: 400;
+  height: 20px;
 }
 
 .textfield>li:nth-of-type(3) {
   margin-top: 10px;
   font-size: 14px;
   color: #5F5F5F;
-
+  height: 20px;
 }
 
 .textfield>li:nth-of-type(3)>ul {
@@ -75,17 +78,13 @@
 .textfield>li:nth-of-type(4) {
   margin-top: 20px;
   font-size: 14px;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
+  height: 20px;
 }
 
-.textfield>li:nth-of-type(5)>textarea {
+.textfield > li:nth-of-type(5){
   width: 100%;
-  height: 110px;
-  border: 1px solid #a8b0ca;
-  border-radius: 4px;
-  resize: none;
-  padding: 10px;
-  box-sizing: border-box;
+  height: calc( 50% - 92.5px );
 }
 
 .textfield>li:nth-of-type(5)> input {
@@ -99,15 +98,29 @@
   margin-bottom: 10px;
 }
 
+.textfield>li:nth-of-type(5)>textarea {
+  width: 100%;
+  height: calc( 100% - 50px );
+  border: 1px solid #a8b0ca;
+  border-radius: 4px;
+  resize: none;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 .textfield>li:nth-of-type(6) {
   margin-top: 15px;
   font-size: 14px;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
+  height: 20px;
+}
+.textfield>li:nth-of-type(7){
+  height: calc( 50% - 92.5px );
 }
 
-.textfield>li:nth-of-type(7)>div {
+.textfield>li:nth-of-type(7) > div {
   width: 100%;
-  height: 110px;
+  height: 100%;
   border: 1px solid #E2E8F0;
   background-color: #EFF4FB;
   border-radius: 4px;
@@ -118,37 +131,14 @@
   font-size: 12px;
 }
 
-.textfield>li:nth-of-type(8){
-  margin-top: 20px;
-}
-
-.textfield>li:nth-of-type(8) > div > button{
-  width: 120px;
-  height: 46px;
-  border-radius: 4px;
-}
-
-.textfield>li:nth-of-type(8) > div > button:nth-of-type(1){
-background-color: #ffffff;
-border: 1px solid #3c50e0;
-color: #3C50E0;
-margin-right: 10px;
-}
-
-.textfield>li:nth-of-type(8)> div > button:nth-of-type(2){
-  background-color: #3c50e0;
-  color:white;
-  border: none;
-}
-
-
 .Selectfield {
-  margin-top: 10px;
+  margin-top: 2.5%;
   width: 90%;
-  height: 220px;
+  max-height: 230px;
+  height: 25%;
   border: 1px solid #E2E8F0;
   border-radius: 2px;
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
   box-sizing: border-box;
 }
 
@@ -157,8 +147,7 @@ margin-right: 10px;
   border-bottom: 1px solid #E2E8F0;
   font-size: 20px;
   font-weight: 400;
-  padding-bottom: 10px;
-  
+  padding-bottom: 5px;
 }
 
 .Selectfield>li:nth-of-type(2),.Selectfield>li:nth-of-type(3) {
@@ -172,11 +161,40 @@ margin-right: 10px;
   height: 25px;
 }
 
-.Selectfield > li > select {
+.Selectfield_selectbox > div{
+  width: 80%;
+}
+
+.Selectfield_selectbox > span{
   width: 100%;
+  height: 35px;
+}
+
+.Selectfield_selectbox > span > select {
+  width: 65%;
   height: 35px;
   border: 2px solid #E2E8F0;
   border-radius: 4px;
+  margin-right: 5%;
+}
+
+.Selectfield_selectbox > span > button{
+  width: 85px;
+  height: 35px;
+  border-radius: 4px;
+}
+
+.Selectfield_selectbox > span > button:nth-of-type(1) {
+  background-color: #ffffff;
+  border: 1px solid #3c50e0;
+  color: #3C50E0;
+  margin-right: 10px;
+}
+
+.Selectfield_selectbox > span  > button:nth-of-type(2) {
+  background-color: #3c50e0;
+  color: white;
+  border: none;
 }
 
 .Selectfield_fileupload{
@@ -205,6 +223,7 @@ margin-right: 10px;
   background-color: #E2E8F0;
   border: none; 
 }
+
 
 .Selectfield_fileupload > span:nth-of-type(1) > button:hover{
   background-color: #aab2bd;
@@ -241,62 +260,55 @@ margin-right: 10px;
 
 
 .pickerfield {
-
   width: 90%;
-  height: 80px;
+  height: 10%;
   border-radius: 2px;
-  padding-left: 20px;
   padding-top: 12px;
   box-sizing: border-box;
+  margin-top: 2.5%;
 }
 
 .pickerfield > li:nth-of-type(1){
-  width: 100%;
-}
-
-.pickerfield > li:nth-of-type(2){
-  margin-top:10px;
   width: 100%;
   height: 46px;
   display: flex;
   justify-content: space-between;
 }
 
-.pickerfield > li:nth-of-type(2) > div > input{
+.pickerfield > li:nth-of-type(1) > div > input{
   width: 240px;
   height: 46px;
   border-radius: 4px;
   border: 1px solid #E2E8F0;
 }
 
-.pickerfield > li:nth-of-type(2) > div > button{
+.pickerfield > li:nth-of-type(1) > div > button{
   width: 120px;
   height: 46px;
   border-radius: 4px;
 }
 
-.pickerfield > li:nth-of-type(2) > div > button:nth-of-type(1){
+.pickerfield > li:nth-of-type(1) > div > button:nth-of-type(1){
 background-color: #ffffff;
 border: 1px solid #3c50e0;
 color: #3C50E0;
 margin-right: 10px;
 }
 
-.pickerfield > li:nth-of-type(2) > div > button:nth-of-type(2){
+.pickerfield > li:nth-of-type(1) > div > button:nth-of-type(2){
   background-color: #3c50e0;
   color:white;
   border: none;
 }
 
-.pickerfield > li:nth-of-type(2) > div > button:nth-of-type(2):hover{
+.pickerfield > li:nth-of-type(1) > div > button:nth-of-type(2):hover{
   background-color: #2d378a;
 }
 
 .SendingList{
-  width: 70%;
-  height: 80%;
-  border-radius: 30px;
-  background-color: #b6b6b6;
+  min-width: 1220px;
+  width: 80%;
+  height: auto;
   position: absolute;
   z-index: 2;
   display: flex;
@@ -305,25 +317,6 @@ margin-right: 10px;
   justify-content: center;
 }
 
-.SendingList > span{
-  width: 90%;
-  height: 85%;
-  background-color: #3C50E0;
-  top:10%;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  text-align: center;
-}
 
-.SendingList > span> ul > li:nth-of-type(3){
-  width: 150px;
-  height: 120px;
-  overflow: hidden;
-}
 
-.SendingList > span> ul > li > img{
-  overflow: hidden;
-}
 

@@ -1,12 +1,15 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const multer = require('multer');
-const path = require('path');
 const kakaologin = require('./kakaologin');
 const kakaoMsg = require('./kakaomsg');
 const crewdataFind = require('./crewdatafind');
 const formDataSave = require('./formDataSave');
 const formDataGet = require('./formDataGet');
+const setupWebSocketServer = require('./websocketServer');
+const WebSocket = require('ws');
+const fs = require('fs');
+const path = require('path');
 
 
 const app = express();
@@ -54,7 +57,14 @@ async function initializePuppeteer() {
         //headless: false
     });
     page = await browser.newPage();
+    await page.setViewport({ width: 600, height: 800 })
 }
+
+const server = app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+
+  setupWebSocketServer(server);
 
 app.post('/kakaologin', async (req, res) => {
     const userData = req.body;
@@ -145,8 +155,4 @@ app.get('/*', (req, res) => {
         Date: Date.now(),
     });
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-app.listen(port, () => {
-    console.log(`app listening at http://localhost:${port}`);
 });

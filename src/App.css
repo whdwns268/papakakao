@@ -14,6 +14,13 @@
 
 @font-face {
   font-family: 'Pretendard';
+  src: local('Pretendard-Regular'), url('./assets/fonts/Pretendard-Regular.otf') format('truetype');
+  font-weight: 500; /* Medium 굵기 */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
   src: local('Pretendard-SemiBold'), url('./assets/fonts/Pretendard-SemiBold.otf') format('truetype');
   font-weight: 600; /* SemiBold 굵기 */
   font-style: normal;
@@ -33,11 +40,22 @@
 
 .App-header {
   background-color: #F1F5F9;
-  min-height: 100vh;
+  min-height: 850px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
   font-family: 'Pretendard', sans-serif;
+}
+
+.isEzMsg{
+  width: 500px;
+  height: 200px;
+  position: absolute;
+  left: 50%;
+  margin-left:-250px;
+  top:50%;
+  margin-top:-125px;
+  z-index: 1;
 }

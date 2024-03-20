@@ -10,7 +10,6 @@ async function formDataGet() {
         // 데이터베이스에서 모든 데이터를 가져옴
         const result = await collection.find({}).toArray();
 
-        console.log("데이터 가져오기 성공:", result);
         return result;
     } catch (error) {
         console.error(error);

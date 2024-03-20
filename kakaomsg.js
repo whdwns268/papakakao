@@ -1,8 +1,9 @@
 const path = require('path');
+const fs = require('fs');
 
 async function kakaomsg({ browser, page, ...userData }) {
     let vacationData = [];  // vacationData 변수를 초기화
-    console.log(userData.userFiles)
+    console.log(userData)
 
     try {
         const dynamicUrl = userData.kakaolink;
@@ -44,25 +45,26 @@ async function kakaomsg({ browser, page, ...userData }) {
             }
         }, value);
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000)); //1초대기
 
         await page.click('.btn_submit');
-        await page.screenshot({ path: 'screenshot5.png' });
-
-
-        // 1초 대기
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500)); //0.5초대기
+        const screenshotPath1 = path.join(__dirname, 'screen', 'screenshot3.png');
+        await page.screenshot({ path: screenshotPath1 });
 
         await page.click('.btn_submit');
         await new Promise(resolve => setTimeout(resolve, 1000));
+        const screenshotPath2 = path.join(__dirname, 'screen', 'screenshot2.png');
+        console.log(screenshotPath2);
+        await page.screenshot({ path: screenshotPath2 });
+        
+        const userFileName = userData.filesName;
+        console.log(userFileName)
+        if (userFileName) {
 
-
-        if (userData.userFileName !== "" || !userData.userFileName) {
-
-            const userFileName = userData.filesName;
             console.log("찾은 파일:", userFileName);
             let filePath = path.join(__dirname, 'uploads', userFileName);
-            console.log(filePath)
+            console.log(filePath);
 
             const [fileChooser] = await Promise.all([
                 page.waitForFileChooser(),
@@ -70,16 +72,21 @@ async function kakaomsg({ browser, page, ...userData }) {
             ]);
 
             await fileChooser.accept([filePath]);
+            
 
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error("파일 삭제 중 오류가 발생했습니다:", err);
-                    return;
-                }
-                console.log(filePath + " 파일이 성공적으로 삭제되었습니다.");
-            });
+            setTimeout(() => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error("파일 삭제 중 오류가 발생했습니다:", err);
+                        return;
+                    }
+                    console.log(filePath + " 파일이 성공적으로 삭제되었습니다.");
+                });
+            }, 2000); // 2초 후에 파일 삭제를 시도
         }
-
+        const screenshotPath3 = path.join(__dirname, 'screen', 'screenshot1.png');
+        await page.screenshot({ path: screenshotPath3 });
+        
 
         const responseApi = {
             message: 'Scraping successful',
