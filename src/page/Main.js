@@ -16,7 +16,6 @@ import EzMsg from './EzMsg';
 function Main() {
 
   const overviewState = useSelector((state) => state.overviewstate);
-  console.log(overviewState);
 
   return (
     <div className='Main_div'>

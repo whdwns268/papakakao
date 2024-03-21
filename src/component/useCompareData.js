@@ -11,7 +11,6 @@ export function useCompareData(selectedFiles) {
   const prefaceValue = useSelector(state => state.prefaceValue);
   const fileValue = useSelector(state => state.fileValue);
 
-console.log(fileValue)
   return async () => {
 
     if (!handsontableData) {
@@ -58,6 +57,7 @@ console.log(fileValue)
             const celldata = w[columnIndex]
             output = output.replace(matchtext[0], celldata);
           }
+          results['Msg'] = output;
 
           const formData = new FormData();
 
@@ -78,9 +78,10 @@ console.log(fileValue)
               // 일치하는 파일을 formData에 추가합니다.
               formData.append('filesName', matchedFile.name);
               formData.append('files', matchedFile);
+              results['filesName'] = matchedFile.name;
               // 필요한 추가 처리를 여기서 수행합니다.
             } else {
-              console.log("해당 이름을 가진 파일이 없습니다.");
+              results['filesName'] = "NoFile";
             }
           }
 
@@ -93,7 +94,7 @@ console.log(fileValue)
 
             //console.log('Response:', response.data);
             results['MsgResponse'] = response.data;
-            await new Promise(resolve => setTimeout(resolve, 2500)); // 2.5초 동안 대기
+            await new Promise(resolve => setTimeout(resolve, 2000)); // 2초 동안 대기
 
           } catch (error) {
             results['Msgerror'] = error;

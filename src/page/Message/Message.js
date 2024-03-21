@@ -63,9 +63,22 @@ function Message(props) {
         return columnNumber - 1;
     }
 
+    //머리말 입력 시 
+    function prefaceValueChange(e) {
+        const value = e.target.value;
+        props.setPrefaceValue(value);
+    }
+
+    //textarea 입력 시
     function handleTextareaChange(e) {
         const value = e.target.value;
         props.setTextareaValue(value);
+        let TextAreaOutput = regexChange(value);
+        props.setCellData(TextAreaOutput);
+    }
+
+    // 시트데이터 확인 후 리턴
+    function regexChange(value){
         let output = value;
         let match;
         const regex = /\{([A-Za-z]+)\}/gi;
@@ -75,7 +88,7 @@ function Message(props) {
             const cellData = hot.getDataAtCell(0, columnIndex);
             output = output.replace(match[0], cellData);
         }
-        props.setCellData(output);
+        return output;
     }
 
     function convertNewlineToBr(text) {
@@ -87,12 +100,6 @@ function Message(props) {
                 </span>
             );
         });
-    }
-
-
-    // 셀렉트된 폼이 있을 경우 텍스트필드 벨류변경
-    function prefaceValueChange(e) {
-        props.setPrefaceValue(e.target.value);
     }
 
     //폼 저장 컴포넌트 실행
@@ -134,7 +141,6 @@ function Message(props) {
         let value = e.target.value
         value = value.toUpperCase();
         props.setFileValue(value)
-        console.log(value)
     }
 
     //히든 파일선택버튼 
@@ -156,18 +162,22 @@ function Message(props) {
     const [msgText, setMsgText] = useState("");
 
     function handleButtonClick() {
-        //handsontableData에 데이터가 있는지 확인
-        if (handsontableData) {
+                
+        // 배열 내의 모든 값이 빈 문자열인지 확인
+        const isAllEmpty = (data) => data.every(row => row.every(cell => cell === ''));
+    
+        if (handsontableData && !isAllEmpty(handsontableData)) {
             dispatch(setOverviewState());
-            setIsDataSendingList(true)
+            setIsDataSendingList(true);
             setcompareDataGo();
-        } else if (!handsontableData) {
+        } else {
             dispatch(setOverviewState());
-            setMsgText("셀에 입력된 데이터가 없습니다.")
+            setMsgText("셀에 입력된 데이터가 없습니다.");
             setShowEzMsg(true);
-            console.log(showEzMsg)
+            console.log(showEzMsg);
         }
     }
+    
 
     return (
         <div className="main_div">
