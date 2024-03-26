@@ -164,17 +164,18 @@ function Message(props) {
     function handleButtonClick() {
                 
         // 배열 내의 모든 값이 빈 문자열인지 확인
-        const isAllEmpty = (data) => data.every(row => row.every(cell => cell === ''));
+        const isAllEmpty = (data) => data.every(row => row.every(cell => cell === '' || cell === null));
     
         if (handsontableData && !isAllEmpty(handsontableData)) {
             dispatch(setOverviewState());
             setIsDataSendingList(true);
             setcompareDataGo();
+            console.log(handsontableData);
         } else {
             dispatch(setOverviewState());
             setMsgText("셀에 입력된 데이터가 없습니다.");
             setShowEzMsg(true);
-            console.log(showEzMsg);
+            console.log(handsontableData);
         }
     }
     

@@ -59,7 +59,8 @@ async function kakaomsg({ browser, page, ...userData }) {
         await page.screenshot({ path: screenshotPath2 });
         
         const userFileName = userData.filesName;
-        console.log(userFileName)
+        console.log(userFileName);
+        console.log(userData);
         if (userFileName) {
 
             console.log("찾은 파일:", userFileName);
@@ -91,12 +92,20 @@ async function kakaomsg({ browser, page, ...userData }) {
         const responseApi = {
             message: 'Scraping successful',
             data: vacationData,
+            value: userData.output,
+            userFileName: userData.filesName,
         };
         return responseApi;
 
     } catch (error) {
-        console.log("실패:" + error)
-        return 'MSG_FAILED' + error;
+
+        const responseApi = {
+            message: 'msg failed / '+ error,
+            data: vacationData,
+            value: value,
+            userFileName: userFileName,
+        };
+        return responseApi;
     }
 
 }

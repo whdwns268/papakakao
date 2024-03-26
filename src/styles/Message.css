@@ -308,7 +308,7 @@ margin-right: 10px;
 .SendingList{
   min-width: 1220px;
   width: 80%;
-  height: auto;
+  height: 90%;
   position: absolute;
   z-index: 2;
   display: flex;

@@ -5,25 +5,34 @@ import axios from 'axios';
 
 
 export function useCompareData(selectedFiles) {
+  
   const dispatch = useDispatch();
   const handsontableData = useSelector(state => state.data);
   const textareaValue = useSelector(state => state.textareaValue);
   const prefaceValue = useSelector(state => state.prefaceValue);
   const fileValue = useSelector(state => state.fileValue);
 
-  return async () => {
+  dispatch(setCompareData());
 
-    if (!handsontableData) {
-      dispatch(setCompareData('셀에 입력된 데이터가 없습니다.'))
-      return '셀에 입력된 데이터가 없습니다.';
-    }
+  return async () => {
 
     let resData;
     let count = 0;
+    let successfulCount = 0;
+    let failCount = 0;
+
+// 각 행의 첫 번째 열을 확인하여 빈 문자열이 아닌 값만 필터링
+    const countNonEmptyFirstCells = (data) => {
+      const nonEmptyFirstCells = data.filter(row => row[0] !== '' && row[0] !== null);
+      return nonEmptyFirstCells.length;
+    };
+
+    const nonEmptyFirstCellCount = countNonEmptyFirstCells(handsontableData);
+
     for (const w of handsontableData) {
       if (w[0]) { // a열의 데이터가 있을때만
         let results = {};
-        results['crewname'] = w[0];
+
         try { //크루명으로 db에서 데이터 뽑아내기
           const response = await axios.post('/crewdatafind', {
             crewname: w[0],
@@ -31,19 +40,24 @@ export function useCompareData(selectedFiles) {
 
           resData = response.data;
           results['CrewnameCk'] = resData
+          console.log(results);
           await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 동안 대기
 
         } catch (error) {
-
+          
           results['DBerror:'] = error;
           console.error('Error:', error);
         }
 
 
         if (resData.length === 0 || resData=="undefined") {
-          results['DB_data_state'] = 'data_None';
+          results['CrewnameCk'] = {};
+          results['CrewnameCk'][0] = {};
+          results['CrewnameCk'][0]["crewname"] = w[0];
+          results['MsgResponse'] = {};
+          results['MsgResponse']['message'] = "NotCrewfind";
+          failCount++;
         } else {
-
           let kakaolink = resData[0]['kakaolink']
           let matchtext;
 
@@ -70,7 +84,8 @@ export function useCompareData(selectedFiles) {
             console.log(fileNamecolumnIndex)
             console.log(selectedFiles)
             const filesArray = Array.from(selectedFiles);
-            const matchedFile = filesArray.find(file => file.name === w[fileNamecolumnIndex]);
+            const matchedFile = filesArray.find(file => file.name.normalize('NFC') === w[fileNamecolumnIndex]);
+            console.log(w[fileNamecolumnIndex]);
 
             // 찾은 파일 처리
             if (matchedFile) {
@@ -78,10 +93,6 @@ export function useCompareData(selectedFiles) {
               // 일치하는 파일을 formData에 추가합니다.
               formData.append('filesName', matchedFile.name);
               formData.append('files', matchedFile);
-              results['filesName'] = matchedFile.name;
-              // 필요한 추가 처리를 여기서 수행합니다.
-            } else {
-              results['filesName'] = "NoFile";
             }
           }
 
@@ -95,14 +106,17 @@ export function useCompareData(selectedFiles) {
             //console.log('Response:', response.data);
             results['MsgResponse'] = response.data;
             await new Promise(resolve => setTimeout(resolve, 2000)); // 2초 동안 대기
-
+            successfulCount++;
           } catch (error) {
-            results['Msgerror'] = error;
+            results['MsgResponse'] = error;
             console.error('Error:', error);
           }
         }
         count++;
         results['Count'] = count;
+        results['successfulCount'] = successfulCount;
+        results['failCount'] = failCount;
+        results['TotalCount'] = nonEmptyFirstCellCount;
         console.log(results);
         dispatch(setCompareData(results));
       }
