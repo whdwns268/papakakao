@@ -1,10 +1,8 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Login_id from './ico/login_id.svg';
 import Login_pw from './ico/login_pw.svg';
 import Loader from './ico/Loader.svg';
-
 import "./styles/Login.css"
 
 function Login() {
@@ -12,7 +10,15 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingText, setIsLoadingText] = useState(false);
-  const navigate = useNavigate();  // useNavigate 훅 사용
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('authToken') !== null;
+    // 이미 인증된 경우 메인페이지로 리다이렉트
+    if (isAuthenticated) {
+      navigate('/main');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,8 +42,10 @@ function Login() {
       });
 
       const data = await response.json();
-
+      console.log(response.status);
+      console.log(data);
       if (response.status === 200) {
+        localStorage.setItem('authToken', data.authToken);
         navigate('/main');
       } else {
         // 로그인 실패: 에러 메시지 출력

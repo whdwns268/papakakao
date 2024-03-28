@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 async function kakaomsg({ browser, page, ...userData }) {
+
     let vacationData = [];  // vacationData 변수를 초기화
     console.log(userData)
 
@@ -57,7 +58,7 @@ async function kakaomsg({ browser, page, ...userData }) {
         const screenshotPath2 = path.join(__dirname, 'screen', 'screenshot2.png');
         console.log(screenshotPath2);
         await page.screenshot({ path: screenshotPath2 });
-        
+
         const userFileName = userData.filesName;
         console.log(userFileName);
         console.log(userData);
@@ -73,7 +74,7 @@ async function kakaomsg({ browser, page, ...userData }) {
             ]);
 
             await fileChooser.accept([filePath]);
-            
+
 
             setTimeout(() => {
                 fs.unlink(filePath, (err) => {
@@ -87,7 +88,7 @@ async function kakaomsg({ browser, page, ...userData }) {
         }
         const screenshotPath3 = path.join(__dirname, 'screen', 'screenshot1.png');
         await page.screenshot({ path: screenshotPath3 });
-        
+
 
         const responseApi = {
             message: 'Scraping successful',
@@ -100,10 +101,10 @@ async function kakaomsg({ browser, page, ...userData }) {
     } catch (error) {
 
         const responseApi = {
-            message: 'msg failed / '+ error,
+            message: 'msg failed / ' + error,
             data: vacationData,
-            value: value,
-            userFileName: userFileName,
+            value: userData.output,
+            userFileName: userData.filesName,
         };
         return responseApi;
     }

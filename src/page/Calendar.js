@@ -1,7 +1,7 @@
 import React from 'react';
-import '../styles/Calender.css';
+import '../styles/Calendar.css';
 
-function Calender() {
+function Calendar() {
     return (
         <div className='Calender_div'>
             <div className='package_div'>
@@ -80,4 +80,4 @@ function Calender() {
     );
 };
 
-export default Calender;
+export default Calendar;

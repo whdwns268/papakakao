@@ -11,10 +11,13 @@ export function useCompareData(selectedFiles) {
   const textareaValue = useSelector(state => state.textareaValue);
   const prefaceValue = useSelector(state => state.prefaceValue);
   const fileValue = useSelector(state => state.fileValue);
+  const namecolumnsValue = useSelector(state => state.namecolumnsValue);
 
   dispatch(setCompareData());
 
   return async () => {
+
+    const namecolumns = columnLabelToIndex(namecolumnsValue);
 
     let resData;
     let count = 0;
@@ -23,19 +26,19 @@ export function useCompareData(selectedFiles) {
 
 // 각 행의 첫 번째 열을 확인하여 빈 문자열이 아닌 값만 필터링
     const countNonEmptyFirstCells = (data) => {
-      const nonEmptyFirstCells = data.filter(row => row[0] !== '' && row[0] !== null);
+      const nonEmptyFirstCells = data.filter(row => row[namecolumns] !== '' && row[namecolumns] !== null);
       return nonEmptyFirstCells.length;
     };
 
     const nonEmptyFirstCellCount = countNonEmptyFirstCells(handsontableData);
 
     for (const w of handsontableData) {
-      if (w[0]) { // a열의 데이터가 있을때만
+      if (w[namecolumns]) { // a열의 데이터가 있을때만
         let results = {};
 
         try { //크루명으로 db에서 데이터 뽑아내기
           const response = await axios.post('/crewdatafind', {
-            crewname: w[0],
+            crewname: w[namecolumns],
           });
 
           resData = response.data;
@@ -50,10 +53,10 @@ export function useCompareData(selectedFiles) {
         }
 
 
-        if (resData.length === 0 || resData=="undefined") {
+        if (resData.length === 0 || resData === "undefined") {
           results['CrewnameCk'] = {};
           results['CrewnameCk'][0] = {};
-          results['CrewnameCk'][0]["crewname"] = w[0];
+          results['CrewnameCk'][0]["crewname"] = w[namecolumns];
           results['MsgResponse'] = {};
           results['MsgResponse']['message'] = "NotCrewfind";
           failCount++;
@@ -65,7 +68,6 @@ export function useCompareData(selectedFiles) {
           let output = value;
           const regex = /\{([A-Z]+)\}/gi;
           while ((matchtext = regex.exec(value)) !== null) {
-            console.log(w[0])
             const columnName = matchtext[1].toUpperCase();
             const columnIndex = columnLabelToIndex(columnName);
             const celldata = w[columnIndex]

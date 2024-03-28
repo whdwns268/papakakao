@@ -76,10 +76,10 @@
 }
 
 .textfield>li:nth-of-type(4) {
-  margin-top: 20px;
+  margin-top: 5px;
   font-size: 14px;
   margin-bottom: 5px;
-  height: 20px;
+  height: 35px;
 }
 
 .textfield > li:nth-of-type(5){
@@ -129,6 +129,45 @@
   box-sizing: border-box;
   overflow: auto;
   font-size: 12px;
+}
+
+.nameSelectinput{
+  display: flex;
+}
+
+.nameSelectinput > span{
+  height: 35px;
+}
+
+.nameSelectinput > span:nth-of-type(1) {
+  width: 65%;
+  margin-right: 5%;
+  display: flex;
+  align-items: center;
+}
+
+.nameSelectinput > span:nth-of-type(2) {
+  width: 30%;
+  display: flex;
+  border: 2px solid #E2E8F0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nameSelectinput > span:nth-of-type(2) > input {
+  width: calc(100% - 100px);
+  border: none;
+  text-align: center;
+}
+
+.nameSelectinput > span:nth-of-type(2) > div {
+  width: 100px;
+  color: #64748B;
+  background-color: #E2E8F0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .Selectfield {

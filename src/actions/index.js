@@ -7,6 +7,7 @@ export const SET_PREFACE_VALUE = 'SET_PREFACE_VALUE';
 export const SET_COMPARE_DATA = 'SET_COMPARE_DATA';
 export const SET_OVERVIEW_STATE = 'SET_OVERVIEW_STATE';
 export const SET_FILE_VALUE = 'SET_FILE_VALUE';
+export const SET_NAMECOLUMNS_VALUE = 'SET_NAMECOLUMNS_VALUE';
 
 export function setPrefaceValue(value) {
   return { type: SET_PREFACE_VALUE, value };
@@ -36,6 +37,11 @@ export function setFileValue(value) {
   return { type: SET_FILE_VALUE, value };
 }
 
+export function setNameColumnsValue(value) {
+  return { type: SET_NAMECOLUMNS_VALUE, value };
+}
+
 export function setOverviewState() {
   return { type: SET_OVERVIEW_STATE };
 }
+

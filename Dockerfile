@@ -1,5 +1,5 @@
 # Node.js 버전 지정
-FROM node:latest
+FROM --platform=linux/amd64 node:latest
 
 # 앱 디렉토리 생성
 WORKDIR /papakakao

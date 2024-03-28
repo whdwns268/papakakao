@@ -1,19 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import NavBar from './Navbar';
 //import Home from './Home';
-import Calendar from './Calender';
+import Calendar from './Calendar';
 import Message from './Message/Message';
 //import Data from './Data';
 //import Setting from './Setting';
 //import Exit from './Exit';
 
 import '../styles/Main.css';
-import { connect , useSelector } from 'react-redux';
-import { useCompareData } from '../component/useCompareData';
-import EzMsg from './EzMsg';
+import { useSelector } from 'react-redux';
 
 function Main() {
+  const navigate = useNavigate(); // useNavigate 사용
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('authToken') === null;
+    // 이미 인증된 경우 메인페이지로 리다이렉트
+    if (isAuthenticated) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const overviewState = useSelector((state) => state.overviewstate);
 
@@ -24,7 +31,7 @@ function Main() {
       <NavBar />
       <Routes>
         {/* <Route path="home" element={<Home />} /> */}
-        <Route path="calender" element={<Calendar />} />
+        <Route path="calendar" element={<Calendar />} />
         <Route path="message" element={<Message />} />
         {/* <Route path="data" element={<Data />} /> */}
         {/* <Route path="setting" element={<Setting />} /> */}

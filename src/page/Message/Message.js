@@ -4,7 +4,7 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import '../../styles/Message.css'
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState, setFileValue } from '../../actions';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState, setFileValue, setNameColumnsValue } from '../../actions';
 import { useCompareData } from '../../component/useCompareData';
 import { useFormdataSave } from '../../component/useFormdataSave';
 import Realtime from './Realtime.js';
@@ -24,6 +24,7 @@ function Message(props) {
     const fileInputRef = useRef(null);
 
     useEffect(() => {
+        props.setNameColumnsValue("A")
 
         const config = {
             data: props.data || Array.from({ length: 150 }, () => Array(50).fill('')), // data 수정
@@ -63,6 +64,13 @@ function Message(props) {
         return columnNumber - 1;
     }
 
+    //크루명 명 입력열
+    function handlenameColumnsValue(e) {
+        let value = e.target.value
+        value = value.toUpperCase();
+        props.setNameColumnsValue(value)
+    }
+
     //머리말 입력 시 
     function prefaceValueChange(e) {
         const value = e.target.value;
@@ -78,7 +86,7 @@ function Message(props) {
     }
 
     // 시트데이터 확인 후 리턴
-    function regexChange(value){
+    function regexChange(value) {
         let output = value;
         let match;
         const regex = /\{([A-Za-z]+)\}/gi;
@@ -162,15 +170,32 @@ function Message(props) {
     const [msgText, setMsgText] = useState("");
 
     function handleButtonClick() {
-                
+
         // 배열 내의 모든 값이 빈 문자열인지 확인
         const isAllEmpty = (data) => data.every(row => row.every(cell => cell === '' || cell === null));
-    
+
         if (handsontableData && !isAllEmpty(handsontableData)) {
-            dispatch(setOverviewState());
-            setIsDataSendingList(true);
-            setcompareDataGo();
-            console.log(handsontableData);
+
+            //크루명 열의 배열에 데이터가 있는지 확인
+            console.log(props.namecolumnsValue)
+            const nameValueIndex = columnLabelToIndex(props.namecolumnsValue)
+            const countNonEmptyFirstCells = (data) => {
+                const nonEmptyFirstCells = data.filter(row => row[nameValueIndex] !== '' && row[nameValueIndex] !== null);
+                return nonEmptyFirstCells.length;
+            };
+            const nonEmptyFirstCellCount = countNonEmptyFirstCells(handsontableData);
+            console.log(nonEmptyFirstCellCount)
+            if (nonEmptyFirstCellCount === 0) {
+                dispatch(setOverviewState());
+                setMsgText(props.namecolumnsValue + "열에 입력된 크루명이 없습니다.");
+                setShowEzMsg(true);
+            } else {
+                dispatch(setOverviewState());
+                setIsDataSendingList(true);
+                setcompareDataGo();
+                console.log(handsontableData);
+            }
+
         } else {
             dispatch(setOverviewState());
             setMsgText("셀에 입력된 데이터가 없습니다.");
@@ -178,11 +203,11 @@ function Message(props) {
             console.log(handsontableData);
         }
     }
-    
+
 
     return (
         <div className="main_div">
-            {showEzMsg && <label className="isEzMsg"><EzMsg  MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>} {/* 조건부 렌더링 */}
+            {showEzMsg && <label className="isEzMsg"><EzMsg MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>} {/* 조건부 렌더링 */}
             {isDataSendingList && <span className="SendingList"><Realtime isDataSendingList={isDataSendingList} setIsDataSendingList={setIsDataSendingList} /></span>}
             <div className="table_div_css" ref={hotElement} />
             <div className="settext">
@@ -198,13 +223,19 @@ function Message(props) {
                 }
                 <ul className='textfield'>
                     <li>Textarea Fields</li>
-                    <li>Active textarea</li>
+                    <li>How to use</li>
                     <li>
                         <ul>
                             <li>보낼 단어가 특정되어 있는 열을 {"{열}"} 형태로 작성 ex ) {"{AA}"}</li>
                         </ul>
                     </li>
-                    <li>Active textarea</li>
+                    <li className='nameSelectinput'>
+                        <span>Active textarea</span>
+                        <span>
+                            <div>크루명 열</div>
+                            <input type='text' maxLength={2} onChange={handlenameColumnsValue} value={props.namecolumnsValue} placeholder='AB'></input>
+                        </span>
+                    </li>
                     <li>
                         <input type='text' onChange={prefaceValueChange} value={props.prefaceValue} placeholder='머리말(시트데이터 적용불가)' />
                         <textarea onChange={handleTextareaChange} value={props.textareaValue} placeholder='본문' />
@@ -267,6 +298,7 @@ const mapStateToProps = state => ({
     data: state.data,
     setIsSendding: state.Value,
     fileValue: state.fileValue,
+    namecolumnsValue: state.namecolumnsValue,
 });
 
 const mapDispatchToProps = {
@@ -276,6 +308,7 @@ const mapDispatchToProps = {
     setHandsontableConfig,
     setHandsontableData,
     setFileValue,
+    setNameColumnsValue,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);

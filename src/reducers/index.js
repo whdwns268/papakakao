@@ -8,6 +8,7 @@ import {
   SET_COMPARE_DATA,
   SET_OVERVIEW_STATE,
   SET_FILE_VALUE,
+  SET_NAMECOLUMNS_VALUE,
 } from '../actions';
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   comparedata: '',
   fileValue: '',
   overviewstate: false,
+  namecolumnsValue: '',
   config: {
     data: Array.from({ length: 150 }, () => Array(50).fill('')),
     rowHeaders: true, // 행 헤더를 표시합니다.
@@ -44,8 +46,11 @@ function rootReducer(state = initialState, action) {
       return { ...state, comparedata: action.value };
     case SET_FILE_VALUE:
       return { ...state, fileValue: action.value };
+    case SET_NAMECOLUMNS_VALUE:
+      return { ...state, namecolumnsValue: action.value };
     case SET_OVERVIEW_STATE:
       return { ...state, overviewstate: !state.overviewstate };
+
 
     default:
       return state;

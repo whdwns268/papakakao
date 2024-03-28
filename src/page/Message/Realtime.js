@@ -94,13 +94,13 @@ function Realtime({ isDataSendingList, setIsDataSendingList }) {
                     ))}
                 </div>
                 <ul className='SendingList_count'>
-                    <li>총 발송 요청 : {lastItem ? lastItem.TotalCount : 'N/A'} </li>
-                    <li>발송완료 : {lastItem ? lastItem.successfulCount : 'N/A'}</li>
-                    <li>발송실패 : {lastItem ? lastItem.failCount : 'N/A'}</li>
+                    <li>총 발송 요청 : {lastItem ? lastItem.TotalCount : '...'} </li>
+                    <li>발송완료 : {lastItem ? lastItem.successfulCount : '...'}</li>
+                    <li>발송실패 : {lastItem ? lastItem.failCount : '...'}</li>
                     {lastItem && (lastItem.TotalCount === (lastItem.successfulCount + lastItem.failCount)) ? (
                         <li><button className='Closebutton' type='button' onClick={handle_SendingList_Close}>X</button></li>
                     ) : (
-                        <li>남은 건 : {lastItem ? lastItem.TotalCount - lastItem.successfulCount - lastItem.failCount : 'N/A'}</li>
+                        <li>남은 건 : {lastItem ? lastItem.TotalCount - lastItem.successfulCount - lastItem.failCount : '...'}</li>
                     )}
                 </ul>
             </li>
