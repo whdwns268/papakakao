@@ -184,7 +184,6 @@ function Message(props) {
     // 텍스트필드 받은 값 확인
     function handleUserChoice(choice) {
         console.log(choice); // "YES" 또는 "NO"
-        // 다른 컴포넌트에 선택 정보를 전달하거나 다른 로직 처리
     };
 
     useEffect(() => {

@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { setBizHotData } from '../../actions';
+import { setBizHotData, setOverviewState } from '../../actions';
 import TGAjson from './TGA.json';
 import { useBizCreate } from '../../component/useBizCreate';
 import '../../styles/BizReserve.css'
 import Select from "react-select";
+import AskMsg from '../AskMsg.js';
+import EzMsg from '../EzMsg.js';
+import BizRealTimeList from './BizRealTime.js';
 
 function BizReserve(props) {
 
+    const dispatch = useDispatch();
     const [TGASelect, setTGASelect] = useState(TGAjson.TIME);
     const hotRef = useRef(null); // DOM 요소에 대한 참조 생성
     const [hot, setHot] = useState(null);
@@ -17,12 +21,13 @@ function BizReserve(props) {
     const [colHeadersName, setColHeadersName] = useState(Object.keys(TGAjson.TIME));
     const isbizHotData = useSelector(state => state.bizHotData);
     const bizSelectRef = useRef(null);
-    const [se_reserveType, setSE_ReserveType] = useState({value:"", label:"선택"});
-    const [se_selectedValue, setSE_SelectedValue] = useState({value:"", label:"선택"});
+    const [se_reserveType, setSE_ReserveType] = useState({ value: "", label: "선택" });
+    const [se_selectedValue, setSE_SelectedValue] = useState({ value: "", label: "선택" });
+    const [isbizRealTimeList, setBizRealTimeList] = useState(false);
 
 
     const templates = [
-        { value: "파라다이스시티", label: "파라다이스시티" },
+        { value: "개발중", label: "개발중" },
         { value: "offlone", label: "오프라인" }
     ]
 
@@ -31,17 +36,15 @@ function BizReserve(props) {
     useEffect(() => {
         setTGASelect(TGAjson[reserveType])
         setColHeadersName(Object.keys(TGASelect));
-        setSE_SelectedValue({value:"", label:"선택"})
-        setSE_ReserveType({value:"", label:"선택"})
-    },[reserveType, TGASelect])
+        setSE_SelectedValue({ value: "", label: "선택" })
+        setSE_ReserveType({ value: "", label: "선택" })
+    }, [reserveType, TGASelect])
 
     useEffect(() => {
         // 이미 hot 인스턴스가 존재하면 파괴함
         if (hot) {
             hot.destroy();
         }
-
-        
 
         const initialData = Array.from({ length: 50 }, () => new Array(colHeadersName.length).fill(""));
         const hotSettings = {
@@ -95,23 +98,79 @@ function BizReserve(props) {
         });
     }, []);
 
+    const [showEzMsg, setShowEzMsg] = useState(false);
+    const [showAskMsg, setShowAskMsg] = useState(false);
+    const [msgText, setMsgText] = useState("");
+    const [titleMsgText, setTitleMsgText] = useState("");
 
+    let bizerrorCk = 0;
     const setBizCreateGo = useBizCreate(); //데이터 실행
     function handle_CreateReserve() {
-        setBizCreateGo();
+        dispatch(setOverviewState());
+        if (!isbizHotData) {
+            setTitleMsgText("!")
+            setMsgText("입력된 데이터가 없습니다");
+            setShowEzMsg(true);
+        } else if (isbizHotData) {
+            for (let index = 0; index < isbizHotData.length; index++) {
+                const data = isbizHotData[index];
+                if (data[6]) {
+                    let isbizHotDataTime = data[6];
+                    let parsedTime = /^(\d{1,2}):(\d{2}):(\d{1})\s(am|pm)$/i.exec(isbizHotDataTime);
+                    console.log(parsedTime);
+
+                    if (parsedTime) {
+                        const minutes = parseInt(parsedTime[2], 10);
+                        if (minutes % 10 === 0) {
+                            bizerrorCk = 0;
+                        } else {
+                            setTitleMsgText("!");
+                            setMsgText((index + 1) + "행의 예약시간을 확인해주세요(10분 단위입력)");
+                            setShowEzMsg(true);
+                            bizerrorCk++;
+                        }
+                    } else {
+                        setTitleMsgText("!");
+                        setMsgText((index + 1) + "행의 예약시간을 정확하게 입력해주세요");
+                        setShowEzMsg(true);
+                        bizerrorCk++;
+                    }
+                }
+
+            }
+
+            if (bizerrorCk === 0) {
+                setTitleMsgText("BIZ 생성 확인")
+                setMsgText("BIZ" + reserveType + "데이터를 생성할까요?");
+                setShowAskMsg(true);
+                console.log(isbizRealTimeList);
+                setBizCreateGo();
+            }
+        }
     }
 
-    function handleChange_reserveType(selectedOption){
+    function handleChange_reserveType(selectedOption) {
         setSE_ReserveType(selectedOption)
     }
 
-    function handleChange_selectValue(selectedOption){
+    function handleChange_selectValue(selectedOption) {
         setSE_SelectedValue(selectedOption)
     }
 
+    function handleUserChoice(choice) {
+        console.log(choice); // "YES" 또는 "NO"
+        if(choice === "YES"){
+            setTimeout(() => {
+                setBizRealTimeList(!isbizRealTimeList)
+            }, 500);
+        }
+    };
 
     return (
         <div className="BizReserve_div">
+            {showEzMsg && <label className="isEzMsg"><EzMsg MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>}
+            {showAskMsg && <span className="isEzMsg"><AskMsg MsgText={msgText} TitleMsgText={titleMsgText} setShowAskMsg={setShowAskMsg} showAskMsg={showAskMsg} onUserChoice={handleUserChoice} executeOnYes={setBizCreateGo} /></span>}
+            {isbizRealTimeList && <span className="biz_SendingList"><BizRealTimeList /></span>}
             <div ref={hotRef}></div>
             <div>
                 <span className='BizReserve_index'>
@@ -132,7 +191,7 @@ function BizReserve(props) {
                                 </div>
                             </div>
                             <div>
-                                <Select options={templates} defaultValue={templates[0]}/>
+                                <Select options={templates} defaultValue={templates[0]} />
                             </div>
                         </li>
 
@@ -141,11 +200,11 @@ function BizReserve(props) {
                             <div className='temple_index_double'>
                                 <div>
                                     <span>여정유형</span>
-                                    <span style={{ width : "100%" }}><Select options={TGASelect.reserveType} value={se_reserveType} onChange={handleChange_reserveType}/></span>
+                                    <span style={{ width: "100%" }}><Select options={TGASelect.reserveType} value={se_reserveType} onChange={handleChange_reserveType} /></span>
                                 </div>
                                 <div>
                                     <span>{TGASelect.selectValueName}</span>
-                                    <span style={{ width : "100%" }}><Select options={TGASelect.selectValue} value={se_selectedValue} onChange={handleChange_selectValue}/></span>
+                                    <span style={{ width: "100%" }}><Select options={TGASelect.selectValue} value={se_selectedValue} onChange={handleChange_selectValue} /></span>
                                 </div>
                             </div>
                             <div>
@@ -164,23 +223,21 @@ function BizReserve(props) {
                                 <span>탑승자 연락처</span>
                                 <input type='text'></input>
                             </div>
-                            <div>
+                            <div className='temple_index_double'>
                                 <div>
                                     <span>탑승인원</span>
-                                    <select>
-                                        <option>1명</option>
-                                    </select>
+                                    <span style={{ width: "100%" }}><Select options={TGASelect.reserveType} value={se_reserveType} onChange={handleChange_reserveType} /></span>
                                 </div>
                                 <div>
                                     <span>수하물 정보</span>
-                                    <input type='text'></input>
+                                    <span style={{ width: "100%" }}><Select options={TGASelect.reserveType} value={se_reserveType} onChange={handleChange_reserveType} /></span>
                                 </div>
                             </div>
-                            <div>
+                            <div className='temple_index_area'>
                                 <span>기타 요청사항</span>
                                 <textarea />
                             </div>
-                            <div>
+                            <div className='temple_index_btn'>
                                 <button type='button'>템플릿 삭제</button>
                                 <button type='button'>템플릿 저장</button>
                                 <button type='button'>템플릿 사용</button>
@@ -188,7 +245,7 @@ function BizReserve(props) {
                         </li>
                     </ul>
                     {/* 하단 생성버튼 */}
-                    <div>
+                    <div className='biz_reservemake_btn'>
                         <button onClick={handle_CreateReserve} type='button'>비즈니스 예약 생성</button>
                     </div>
                 </span>

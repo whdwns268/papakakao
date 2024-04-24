@@ -8,13 +8,14 @@ import Exit from '../ico/exit.svg';
 import Home from '../ico/home.svg';
 import Message from '../ico/message.svg';
 import Setting from '../ico/setting.svg';
+import BizReserve from '../ico/bizreserve.svg';
 
 
 function Navbar() {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const icons = [Home, Calender, Message, Data, Data, Setting, Exit];
-  const paths = ["/main/home", "/main/calender", "/main/message", "/main/data",  "/main/bizreserve", "/main/setting", "/main/exit"];
+  const icons = [Home, Calender, Message, BizReserve, Data, Setting, Exit];
+  const paths = ["/main/home", "/main/calender", "/main/message", "/main/bizreserve",  "/main/data", "/main/setting", "/main/exit"];
 
 
   return (
