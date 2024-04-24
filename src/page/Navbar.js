@@ -13,8 +13,8 @@ import Setting from '../ico/setting.svg';
 function Navbar() {
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const icons = [Home, Calender, Message, Data, Setting, Exit];
-  const paths = ["/main/home", "/main/calender", "/main/message", "/main/data", "/main/setting", "/main/exit"];
+  const icons = [Home, Calender, Message, Data, Data, Setting, Exit];
+  const paths = ["/main/home", "/main/calender", "/main/message", "/main/data",  "/main/bizreserve", "/main/setting", "/main/exit"];
 
 
   return (

@@ -22,13 +22,11 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    
     let timerId;
 
     try {
-
       setIsLoading(true);
-
       timerId = setTimeout(() => {
         setIsLoadingText(true);
       }, 5000);
@@ -45,7 +43,7 @@ function Login() {
       console.log(response.status);
       console.log(data);
       if (response.status === 200) {
-        localStorage.setItem('authToken', data.authToken);
+        localStorage.setItem('authToken', "Bearer "+data.authToken);
         navigate('/main');
       } else {
         // 로그인 실패: 에러 메시지 출력

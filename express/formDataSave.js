@@ -8,8 +8,8 @@ async function formDataSave(userData) {
         const collection = database.collection("selectform");
         
         const result = await collection.insertOne(userData);
-
-        console.log("데이터 저장 성공:", result);
+        result.situation = "successful";
+        
         return result;
     } catch (error) {
         console.error(error);

@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import '../../styles/Realtime.css'
 import { setOverviewState } from '../../actions';
+import CrewinfoAdd from './CrewinfoAdd';
 
-function Realtime({ isDataSendingList, setIsDataSendingList }) {
+function Realtime({ isDataSendingList, setIsDataSendingList, selectedFiles }) {
 
     const dispatch = useDispatch();
 
     const comparedata = useSelector((state) => state.comparedata);
-    const [comparedata_View, setComparedata_View] = useState([])
+    const [comparedata_View, setComparedata_View] = useState([]);
     const [imageSrc, setImageSrc] = useState('');
     const [lastItem, setLastItem] = useState(null);
+    const [isCrewinfoAdd, setCrewInfoAdd] = useState(false);
+    const [selectedCrewname, setSelectedCrewname] = useState(null);
+    const [selectedCount, setSelectedCount] = useState(null);
+
 
 
 
@@ -41,13 +46,29 @@ function Realtime({ isDataSendingList, setIsDataSendingList }) {
 
     useEffect(() => {
         // comparedata의 길이에 따라 조건을 확인하고, 상태를 업데이트합니다.
+        
         if (comparedata) {
-            if (comparedata["Count"] === 1) {
+            console.log(comparedata["resetCount"])
+            if (comparedata["resetCount"] === 0) {
                 setComparedata_View([comparedata]); // 배열 상태로 초기화
                 //console.log(comparedata_View);
-            } else if ((comparedata["Count"] > 1)) {
-                setComparedata_View(prev => [...prev, comparedata]); // 이전 배열 상태에 새로운 데이터 추가
-                //console.log(comparedata_View);
+            } else if (comparedata["resetCount"] > 0) {
+                
+                setComparedata_View(prev => {
+                    // Count가 동일한 요소의 인덱스를 찾습니다.
+                    const index = prev.findIndex(item => item["Count"] === comparedata["Count"]);
+
+                    // 동일한 Count 값을 가진 요소가 있으면,
+                    if (index !== -1) {
+                        // 해당 요소를 새로운 comparedata로 업데이트합니다.
+                        const updated = [...prev];
+                        updated[index] = comparedata;
+                        return updated; // 업데이트된 배열을 반환합니다.
+                    } else {
+                        // 동일한 Count 값을 가진 요소가 없으면 요소추가
+                        return [...prev, comparedata];
+                    }
+                });
             }
         }
     }, [comparedata]); // comparedata가 변경될 때마다 useEffect가 실행됩니다.
@@ -63,10 +84,28 @@ function Realtime({ isDataSendingList, setIsDataSendingList }) {
         dispatch(setOverviewState());
     }
 
+    function HandleCrewinfoAdd(crewname, count) {
+        setCrewInfoAdd(true)
+        setSelectedCrewname(crewname);
+        console.log(count);
+        setSelectedCount(count);
+    }
+
     return (
         <ul className='SendingList_ul'>
+
             <li>{imageSrc && <img src={imageSrc} alt="이미지" />}</li>
             <li>
+                {isCrewinfoAdd && <span className='Realtime_setbackground'></span>}
+                {isCrewinfoAdd && <span className="crewinfoaddView">
+                    <CrewinfoAdd
+                        crewname={selectedCrewname}
+                        selectcount={selectedCount}
+                        setCrewInfoAdd={setCrewInfoAdd}
+                        isCrewinfoAdd={isCrewinfoAdd}
+                        selectedFiles={selectedFiles}
+                    />
+                </span>}
                 <ul className='RealTime_Send_History RealTime_fontbold'>
                     <li>이름</li>
                     <li>발송내용</li>
@@ -83,8 +122,11 @@ function Realtime({ isDataSendingList, setIsDataSendingList }) {
                             key={index}>
                             <li>{data.CrewnameCk[0]["crewname"]}</li>
                             {data.MsgResponse.message === "NotCrewfind" ? (
-                                <li>크루정보필요 <button>등록</button></li>
-                            ):(
+                                <li>크루정보필요
+                                    <button className='crewinserbtn'
+                                        onClick={() => HandleCrewinfoAdd(data.CrewnameCk[0]["crewname"], data["Count"])}>등록</button>
+                                </li>
+                            ) : (
                                 <li>{data.Msg === "" ? "발송내용 없음" : data.Msg}</li>
                             )}
                             <li>{data.MsgResponse.userFileName ? data.MsgResponse.userFileName : "파일없음"}</li>

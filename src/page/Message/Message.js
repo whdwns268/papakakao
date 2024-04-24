@@ -1,29 +1,64 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import '../../styles/Message.css'
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState, setFileValue, setNameColumnsValue } from '../../actions';
+import { setPrefaceValue, setTextareaValue, setCellData, setHandsontableConfig, setHandsontableData, setOverviewState, setFileValue, setNameColumnsValue, setFormValue} from '../../actions';
 import { useCompareData } from '../../component/useCompareData';
-import { useFormdataSave } from '../../component/useFormdataSave';
+import FormDataSave from './FormDataSave.js'
 import Realtime from './Realtime.js';
 import EzMsg from '../EzMsg.js';
+import AskMsg from '../AskMsg.js';
+import useFetchFormValue from '../../component/useFetchFormValue.js';
+import { useFormdataDelete } from '../../component/useFormdataDelete.js';
 
 function Message(props) {
     const dispatch = useDispatch();
     const handsontableData = useSelector(state => state.data);
+    const formValue = useSelector(state => state.formValue);
 
     const hotElement = useRef(null);
     const [hot, setHot] = useState(null);
     const [isOverlayActive, setIsOverlayActive] = useState(false);
     const [isDataSendingList, setIsDataSendingList] = useState(false);
-    const [formName, setFormName] = useState("폼 이름");
-    const [options, setOptions] = useState([]);
+
+    const [formValues, setformValues] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const fileInputRef = useRef(null);
 
+    const [isformSelectItem, setFormSelectItem] = useState([]);
+
+    window.addEventListener('beforeunload', function (e) {
+        // 새로고침이나 페이지 이동을 시도할 때 경고 메시지 표시
+        e.preventDefault();
+        e.returnValue = '';
+    });
+    const navigate = useNavigate();
+
+    useFetchFormValue();
+
+//세션체크
     useEffect(() => {
+        axios.get('/teercheckUrl', {
+            withCredentials: true, // 쿠키포함
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            console.log(response);
+            if (response.data === "no_userid" || response.data === "no_login" || response.data === "error_puppeteer") {
+                localStorage.clear();
+                alert("세선이 만료되었습니다. 다시 로그인해주세요")
+                navigate('/login');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+
+
         props.setNameColumnsValue("A")
 
         const config = {
@@ -43,16 +78,6 @@ function Message(props) {
         props.setHandsontableConfig(config);
         const hotInstance = new Handsontable(hotElement.current, config);
         setHot(hotInstance);
-
-        const fetchData = async () => {
-            try {
-                const response = await axios.post('/formDataGet');
-                setOptions(response.data); // 서버로부터 받은 데이터로 상태 업데이트
-            } catch (error) {
-                console.error('데이터를 가져오는 데 실패했습니다.', error);
-            }
-        };
-        fetchData();
     }, []);
 
     function columnLabelToIndex(columnLabel) {
@@ -111,38 +136,60 @@ function Message(props) {
     }
 
     //폼 저장 컴포넌트 실행
-    const setformdataSave = useFormdataSave();
-
-    function formdataSave() {
+    function handleformdataSave() {
         setIsOverlayActive(true);
     }
 
-    //새로운 폼 이름 입력 후 저장
-    function handleChange(event) {
-        setFormName(event.target.value); // 변경된 값을 상태에 업데이트
-    };
+
+    const setFormdataDeleteGo = useFormdataDelete({ formSelectItem: isformSelectItem }); // 폼삭제 실행
+    //폼 삭제 컴포넌트 실행
+    function handleformdataDelete() {
+        if (isformName !== "폼 선택") {
+            dispatch(setOverviewState());
+            setTitleMsgText("폼 삭제")
+            setMsgText(isformName+" 폼을 삭제할까요?");
+            setShowAskMsg(true);
+        } else {
+            dispatch(setOverviewState());
+            setTitleMsgText("!")
+            setMsgText("선택된 폼이 없습니다");
+            setShowEzMsg(true);
+        }
+    }
 
 
-    //텍스트필드 폼 저장
-    function formdataSavego() {
-        setformdataSave(formName); // 변경된 값을 상태에 업데이트
-    };
 
+    const [isformName, setFormName] = useState("폼 선택");
+
+    useEffect(()=>{
+        props.setFormValue(formValue);
+    },[formValue])
+
+
+    
     //텍스트필드 폼 선택
     function handleSelectChange(event) {
         const selectedFormName = event.target.value;
-
-        // options에서 선택된 formname에 해당하는 객체를 찾습니다.
-        const selectedItem = options.find(item => item.formname === selectedFormName);
-        console.log(options);
-
-        console.log(selectedItem);
+        setFormName(selectedFormName);
+        // formValue 선택된 formname에 해당하는 객체를 찾습니다.
+        const selectedItem = formValue.find(item => item.formname === selectedFormName);
+        setFormSelectItem(selectedItem);
         if (selectedItem) {
             // 찾은 객체의 prefaceValue와 textareaValue로 상태를 업데이트합니다.
             prefaceValueChange({ target: { value: selectedItem.prefaceValue } });
             handleTextareaChange({ target: { value: selectedItem.textareaValue } });
+            return selectedFormName;
         }
     }
+    // 텍스트필드 받은 값 확인
+    function handleUserChoice(choice) {
+        console.log(choice); // "YES" 또는 "NO"
+        // 다른 컴포넌트에 선택 정보를 전달하거나 다른 로직 처리
+    };
+
+    useEffect(() => {
+        setFormName(isformName);
+    }, [isformName])
 
     //파일명 입력열
     function handleFileValue(e) {
@@ -163,12 +210,14 @@ function Message(props) {
     };
 
     // ------------------전송관련
-    const setcompareDataGo = useCompareData(selectedFiles); //데이터 실행
+    const setcompareDataGo = useCompareData({ selectedFiles: selectedFiles }); //데이터 실행
+
+    const [showEzMsg, setShowEzMsg] = useState(false);
+    const [showAskMsg, setShowAskMsg] = useState(false);
+    const [msgText, setMsgText] = useState("");
+    const [titleMsgText, setTitleMsgText] = useState("");
 
     //즉시발송 버튼을 눌렀을 때 
-    const [showEzMsg, setShowEzMsg] = useState(false);
-    const [msgText, setMsgText] = useState("");
-
     function handleButtonClick() {
 
         // 배열 내의 모든 값이 빈 문자열인지 확인
@@ -207,18 +256,15 @@ function Message(props) {
 
     return (
         <div className="main_div">
-            {showEzMsg && <label className="isEzMsg"><EzMsg MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>} {/* 조건부 렌더링 */}
-            {isDataSendingList && <span className="SendingList"><Realtime isDataSendingList={isDataSendingList} setIsDataSendingList={setIsDataSendingList} /></span>}
+            {showEzMsg && <label className="isEzMsg"><EzMsg MsgText={msgText} setShowEzMsg={setShowEzMsg} showEzMsg={showEzMsg} /></label>}
+            {showAskMsg && <span className="isEzMsg"><AskMsg MsgText={msgText} TitleMsgText={titleMsgText} setShowAskMsg={setShowAskMsg} showAskMsg={showAskMsg} onUserChoice={handleUserChoice} executeOnYes={setFormdataDeleteGo}/></span>}
+            {isDataSendingList && <span className="SendingList"><Realtime isDataSendingList={isDataSendingList} setIsDataSendingList={setIsDataSendingList} selectedFiles={selectedFiles} /></span>}
             <div className="table_div_css" ref={hotElement} />
             <div className="settext">
                 {/* 폼저장시 */}
                 {isOverlayActive &&
                     <div className="settext_overlay">
-                        <div>
-                            <input type='text' value={formName} onChange={handleChange} />
-                            <input type='button' value="저장" onClick={formdataSavego} />
-                            <input type='button' value="닫기" onClick={() => setIsOverlayActive(false)} />
-                        </div>
+                        <FormDataSave setIsOverlayActive={setIsOverlayActive} />
                     </div>
                 }
                 <ul className='textfield'>
@@ -249,12 +295,13 @@ function Message(props) {
                     <li className='Selectfield_selectbox'>
                         <div>Select form</div>
                         <span><select onChange={handleSelectChange}>
-                            {options.map((option, index) => (
+                            <option value="폼 선택" hidden>폼 선택</option>
+                            {formValue.map((option, index) => (
                                 <option key={index} value={option.formname}>{option.formname}</option>
                             ))}
                         </select>
-                            <button type='button' onClick={formdataSave}>폼 저장</button>
-                            <button type='button'>개발 중</button>
+                            <button type='button' onClick={handleformdataSave}>폼 저장</button>
+                            <button type='button' onClick={handleformdataDelete}>폼 삭제</button>
                         </span>
                     </li>
 
@@ -268,7 +315,7 @@ function Message(props) {
                             </span>
                             <span>
                                 <div>파일명 열</div>
-                                <input type='text' maxLength={2} onChange={handleFileValue} value={props.fileValue} placeholder='AB'></input>
+                                <input type='text' maxLength={2} onChange={handleFileValue} value={props.fileValue} placeholder='ex) AB'></input>
                             </span>
                         </span>
                     </li>
@@ -277,7 +324,8 @@ function Message(props) {
                 <ul className='pickerfield'>
                     <li>
                         <div>
-                            <input type="date"></input>
+                        <input type="date"></input>
+                        <input type="time"></input>
                         </div>
                         <div>
                             <button type='button'>예약 발송</button>
@@ -299,6 +347,7 @@ const mapStateToProps = state => ({
     setIsSendding: state.Value,
     fileValue: state.fileValue,
     namecolumnsValue: state.namecolumnsValue,
+    formValue: state.formValue,
 });
 
 const mapDispatchToProps = {
@@ -309,6 +358,7 @@ const mapDispatchToProps = {
     setHandsontableData,
     setFileValue,
     setNameColumnsValue,
+    setFormValue,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);

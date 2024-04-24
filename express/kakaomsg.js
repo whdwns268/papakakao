@@ -16,7 +16,7 @@ async function kakaomsg({ browser, page, ...userData }) {
 
         //await page.click('#chatWrite');
         //await page.keyboard.type(userData.output);
-
+ 
         const prefaceValue = userData.prefaceValue;
 
         await page.evaluate((value) => {
@@ -46,18 +46,10 @@ async function kakaomsg({ browser, page, ...userData }) {
             }
         }, value);
 
-        await new Promise(resolve => setTimeout(resolve, 1000)); //1초대기
+        await new Promise(resolve => setTimeout(resolve, 100)); //0.1초대기
 
         await page.click('.btn_submit');
         await new Promise(resolve => setTimeout(resolve, 500)); //0.5초대기
-        const screenshotPath1 = path.join(__dirname, 'screen', 'screenshot3.png');
-        await page.screenshot({ path: screenshotPath1 });
-
-        await page.click('.btn_submit');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const screenshotPath2 = path.join(__dirname, 'screen', 'screenshot2.png');
-        console.log(screenshotPath2);
-        await page.screenshot({ path: screenshotPath2 });
 
         const userFileName = userData.filesName;
         console.log(userFileName);
@@ -65,7 +57,7 @@ async function kakaomsg({ browser, page, ...userData }) {
         if (userFileName) {
 
             console.log("찾은 파일:", userFileName);
-            let filePath = path.join(__dirname, 'uploads', userFileName);
+            let filePath = path.join(__dirname,'..','uploads', userFileName);
             console.log(filePath);
 
             const [fileChooser] = await Promise.all([
@@ -84,15 +76,16 @@ async function kakaomsg({ browser, page, ...userData }) {
                     }
                     console.log(filePath + " 파일이 성공적으로 삭제되었습니다.");
                 });
-            }, 2000); // 2초 후에 파일 삭제를 시도
+            }, 1000); // 2초 후에 파일 삭제를 시도
         }
-        const screenshotPath3 = path.join(__dirname, 'screen', 'screenshot1.png');
+        const screenshotPath3 = path.join(__dirname, '..','screen', 'screenshot1.png');
         await page.screenshot({ path: screenshotPath3 });
 
 
         const responseApi = {
             message: 'Scraping successful',
             data: vacationData,
+            prefaceValue : prefaceValue,
             value: userData.output,
             userFileName: userData.filesName,
         };
@@ -103,6 +96,7 @@ async function kakaomsg({ browser, page, ...userData }) {
         const responseApi = {
             message: 'msg failed / ' + error,
             data: vacationData,
+            prefaceValue : prefaceValue,
             value: userData.output,
             userFileName: userData.filesName,
         };

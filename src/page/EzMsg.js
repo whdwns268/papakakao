@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setOverviewState } from '../actions';
 
 function EzMsg({ MsgText, setShowEzMsg, showEzMsg }) {
     
+    const overviewState = useSelector((state) => state.overviewstate);
     const dispatch = useDispatch();
-
     const [scale, setScale] = useState('scale(0.0)');
 
     useEffect(() => {
@@ -17,7 +18,12 @@ function EzMsg({ MsgText, setShowEzMsg, showEzMsg }) {
     function handleTransitionEnd() {
         if (scale === 'scale(0)') {
             setShowEzMsg(!showEzMsg); // 트랜지션이 축소 방향으로 완료된 경우 컴포넌트 닫기
-            dispatch(setOverviewState());
+            if(overviewState===true){
+                console.log(overviewState)
+                dispatch(setOverviewState(false));
+            }else if(overviewState===false){
+                console.log(overviewState)
+            }
         }
     }
 
@@ -70,7 +76,7 @@ function EzMsg({ MsgText, setShowEzMsg, showEzMsg }) {
 
     return (
         <div style={EzMsg_Style} onTransitionEnd={handleTransitionEnd}>
-            <span style={EzMsg_Style_span1}>확인이 필요합니다</span>
+            <span style={EzMsg_Style_span1}>아래 내용을 확인해주세요</span>
             <span style={EzMsg_Style_span2}>{MsgText}</span>
             <button style={EzMsg_Style_btn} type="button" onClick={setEzMsgBtn}>
                 닫기

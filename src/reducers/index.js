@@ -9,6 +9,8 @@ import {
   SET_OVERVIEW_STATE,
   SET_FILE_VALUE,
   SET_NAMECOLUMNS_VALUE,
+  SET_FORM_VALUE,
+  SET_BIZHOT_DATA,
 } from '../actions';
 
 const initialState = {
@@ -19,6 +21,7 @@ const initialState = {
   fileValue: '',
   overviewstate: false,
   namecolumnsValue: '',
+  formValue: [],
   config: {
     data: Array.from({ length: 150 }, () => Array(50).fill('')),
     rowHeaders: true, // 행 헤더를 표시합니다.
@@ -28,6 +31,8 @@ const initialState = {
     overflow: 'scroll',
     licenseKey: 'non-commercial-and-evaluation',
   },
+
+  bizHotData: '',
 };
 
 function rootReducer(state = initialState, action) {
@@ -48,6 +53,12 @@ function rootReducer(state = initialState, action) {
       return { ...state, fileValue: action.value };
     case SET_NAMECOLUMNS_VALUE:
       return { ...state, namecolumnsValue: action.value };
+    case SET_FORM_VALUE:
+      return { ...state, formValue: action.value };
+    case SET_BIZHOT_DATA:
+      return { ...state, bizHotData: action.value };
+
+      
     case SET_OVERVIEW_STATE:
       return { ...state, overviewstate: !state.overviewstate };
 

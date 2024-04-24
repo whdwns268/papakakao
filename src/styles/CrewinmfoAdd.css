@@ -1,0 +1,158 @@
+.crewinfoAdd {
+    display: flex;
+    background-color: white;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    height: 100%;
+    width: 100%;
+    border-radius: 12px;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    transition: all 0.2s;
+    transform: scale(0.0); 
+}
+
+.crewinfoAdd>span {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.crewinfoAdd>span:nth-of-type(1) {
+    height: 40%;
+}
+
+.crewinfoAdd>span:nth-of-type(1)>div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.crewinfoAdd>span:nth-of-type(1)>div:nth-of-type(1) {
+    height: 50%;
+}
+
+.crewinfoAdd>span:nth-of-type(1)>div:nth-of-type(2) {
+    width: 100%;
+    height: 15%;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.crewinfoAdd>span:nth-of-type(1)>div:nth-of-type(3) {
+    height: 20%;
+    font-size: 15px;
+}
+
+.crewinfoAdd>span:nth-of-type(1)>label {
+    position: absolute;
+    left: 100%;
+    margin-left: -50px;
+    top: 0%;
+    margin-top: 15px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.crewinfoAdd>span:nth-of-type(2) , .crewinfoAdd>span:nth-of-type(3) {
+    flex-direction: row;
+    height: 15%;
+    padding:0;
+}
+
+.crewinfoAdd>span:nth-of-type(2)>div  , .crewinfoAdd>span:nth-of-type(3)>div {
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.crewinfoAdd>span:nth-of-type(2)>div:nth-of-type(1), .crewinfoAdd>span:nth-of-type(3)>div:nth-of-type(1){
+    padding-right: 10px;
+}
+
+.crewinfoAdd>span:nth-of-type(2)>div:nth-of-type(2) , .crewinfoAdd>span:nth-of-type(3)>div:nth-of-type(2){
+    padding-left: 10px;
+}
+
+.crewinfoAdd>span:nth-of-type(2)>div>label, .crewinfoAdd>span:nth-of-type(3)>div>label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #344054;
+}
+
+.crewinfoAdd>span:nth-of-type(2)>div>input , .crewinfoAdd>span:nth-of-type(3)>div>input {
+    width: 100%;
+    height: 32px;
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #D0D5DD;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.crewinfoAdd>span:nth-of-type(4){
+    height: 15%;
+}
+
+.crewinfoAdd>span:nth-of-type(4) >label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #344054;
+    width: 100%;
+}
+
+
+.crewinfoAdd>span:nth-of-type(4) >input {
+    width: 100%;
+    height: 32px;
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #D0D5DD;
+    border-radius: 5px;
+}
+
+.crewinfoAdd>span:nth-of-type(5){
+    height: 35%;
+    justify-content: flex-end
+}
+
+.crewinfoAdd>span:nth-of-type(5) > button{
+    width: 100%;
+    height: 45px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.crewinfoAdd>span:nth-of-type(5) > button:nth-of-type(1){
+    border: none;
+    background-color: #7F56D9;
+    color:white;
+    margin-bottom: 10px;
+}
+
+.crewinfoAdd>span:nth-of-type(5) > button:nth-of-type(1):hover{
+    background-color: #694bab;
+}
+
+.crewinfoAdd>span:nth-of-type(5) > button:nth-of-type(2){
+    border: none;
+    background-color: white;
+    border: 1px solid #D0D5DD;
+    color:#344054;
+}
+
+.crewinfoAdd>span:nth-of-type(4) > button:nth-of-type(2):hover{
+    background-color: #ebebeb;
+}
+
+.crewinfo_inputInvaild{
+    border: 1px solid #CC2D22 !important;
+}
